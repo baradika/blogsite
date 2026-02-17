@@ -12,6 +12,7 @@ import rehypeKatex from 'rehype-katex'
 import rehypeShiki from '@shikijs/rehype'
 import remarkEmoji from 'remark-emoji'
 import remarkMath from 'remark-math'
+import { remarkPdfEmbed } from './src/lib/remark-pdf-embed'
 
 import { pluginCollapsibleSections } from '@expressive-code/plugin-collapsible-sections'
 import { pluginLineNumbers } from '@expressive-code/plugin-line-numbers'
@@ -26,7 +27,14 @@ export default defineConfig({
       entrypoint: 'astro/assets/services/noop',
     },
   },
-  integrations: [mdx(), react(), sitemap(), icon()],
+  integrations: [
+    mdx({
+      remarkPlugins: [remarkPdfEmbed],
+    }),
+    react(),
+    sitemap(),
+    icon(),
+  ],
   vite: {
     plugins: [tailwindcss()],
   },
