@@ -11,7 +11,7 @@ interface Props {
 }
 
 const { author } = Astro.props
-const { name, avatar, bio, pronouns } = author.data
+const { name, fullName, avatar, bio, pronouns } = author.data
 const currentPath = Astro.url.pathname
 const isAuthorPage = currentPath === `/authors/${author.id}`
 
@@ -25,7 +25,7 @@ const socialLinks: SocialLink[] = [
 ---
 
 <div
-  class="has-[a:hover]:bg-muted/50 overflow-hidden rounded-xl border p-4 transition-colors duration-300 ease-in-out"
+  class="group has-[a:hover]:bg-muted/50 overflow-hidden rounded-xl border p-4 transition-colors duration-300 ease-in-out"
 >
   <div class="flex flex-wrap gap-4">
     <Link
@@ -47,7 +47,23 @@ const socialLinks: SocialLink[] = [
     <div class="flex grow flex-col justify-between gap-y-4">
       <div>
         <div class="flex flex-wrap items-center gap-x-2">
-          <h3 class="text-lg font-medium">{name}</h3>
+          <div class="inline-grid h-7 overflow-hidden">
+            <h3
+              class={cn(
+                'col-start-1 row-start-1 text-lg font-medium transition-transform duration-300',
+                fullName && 'group-hover:-translate-y-full',
+              )}
+            >
+              {name}
+            </h3>
+            {
+              fullName && (
+                <h3 class="col-start-1 row-start-1 translate-y-full text-lg font-medium text-nowrap transition-transform duration-300 group-hover:translate-y-0">
+                  {fullName}
+                </h3>
+              )
+            }
+          </div>
           {
             pronouns && (
               <span class="text-muted-foreground text-sm">({pronouns})</span>

@@ -1,0 +1,71 @@
+---
+import { Icon } from 'astro-icon/components';
+---
+
+<div class="rounded-lg border">
+  <div
+    id="music-presence"
+    class="relative flex flex-col justify-between gap-4 p-6"
+  >
+    <div class="absolute top-6 right-6 text-muted-foreground">
+      <Icon name="lucide:audio-lines" class="w-6 h-6" />
+    </div>
+    <!-- Skeleton Loading State -->
+    <div id="music-skeleton" class="flex flex-col gap-4">
+      <div class="flex items-start gap-4">
+        <div class="w-16 h-16 rounded bg-muted animate-pulse"></div>
+        <div class="flex-1 space-y-2">
+          <div class="h-5 bg-muted rounded w-3/4 animate-pulse"></div>
+          <div class="h-4 bg-muted rounded w-1/2 animate-pulse"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Music Content -->
+    <div id="music-content" class="hidden">
+      <div class="flex items-start gap-4">
+        <img
+          id="album-art"
+          class="w-16 h-16 rounded border object-cover"
+          alt="Album Art"
+        />
+        <div class="flex-1 min-w-0">
+          <span id="now-playing" class="text-xs text-muted-foreground block mb-1"></span>
+          <div class="flex flex-col gap-0.5">
+            <a
+              id="song-link"
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-foreground hover:underline group inline-flex items-center gap-1"
+            >
+              <span id="song-title" class="font-medium truncate"></span>
+              <Icon name="lucide:external-link" class="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+            </a>
+            <div class="flex items-center gap-1.5 text-sm text-muted-foreground flex-wrap">
+              <span id="artist-name"></span>
+              <span id="separator-artist-name">•</span>
+              <span id="album-name"></span>
+              <span id="separator-album-name" class="hidden"></span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { initMusicPresence } from './MusicPresence';
+
+  const onIdle = (cb: IdleRequestCallback) =>
+    (window.requestIdleCallback || ((cb) => setTimeout(cb, 1)))(cb);
+
+  onIdle(() => {
+    const container = document.getElementById('music-presence') as HTMLDivElement | null;
+    if (container) {
+      initMusicPresence(container);
+    }
+  });
+</script>

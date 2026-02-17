@@ -6,6 +6,7 @@ import { buttonVariants } from '@/components/ui/button'
 import { SITE } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
 import { getRecentPosts } from '@/lib/data-utils'
+import MusicPresence from '@/components/MusicPresence.astro'
 
 const blog = await getRecentPosts(SITE.featuredPostCount)
 ---
@@ -14,51 +15,32 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
   <PageHead slot="head" title="Home" />
   <section class="rounded-lg border">
     <div class="flex flex-col space-y-1.5 p-6">
-      <h3 class="text-3xl leading-none font-medium">er·u·dite</h3>
+      <h3 class="text-3xl leading-none font-medium">b4r</h3>
       <p class="text-muted-foreground text-sm">
-        /ˈer(y)əˌdīt/ &bull; <span class="font-medium">adjective</span>
+        /ˈbar/ &bull; <span class="font-medium">nouns</span>
       </p>
     </div>
     <div class="p-6 pt-0">
       <p class="text-muted-foreground mb-2 text-sm">
-        astro-erudite is an opinionated, unstyled static blogging template built
-        with <Link
-          href="https://astro.build"
-          class="text-foreground"
-          external
-          underline>Astro</Link
-        >, <Link
-          href="https://tailwindcss.com"
-          class="text-foreground"
-          external
-          underline>Tailwind</Link
-        >, and <Link
-          href="https://ui.shadcn.com"
-          class="text-foreground"
-          external
-          underline>shadcn/ui</Link
-        >. Extraordinarily loosely based on the <Link
-          href="https://astro-micro.vercel.app/"
-          class="text-foreground"
-          external
-          underline>Astro Micro</Link
-        > theme.
+        CTF with @Try4gain. Interested in Reversing (i hate windows based rev challs 👿), Forensics (ye but not the file size dawg 😐), Blockchain (i love to learn it cus i think this is the future 🫡), Web Exploitation (i hate hard xss challs 🗿) and Linux (i use arch btw 🤓). 
       </p>
+      
+      <p class="text-muted-foreground mb-2 text-sm">
+        Besides security shit, I enjoy playing roblox😜 and watching anime.
+      </p>
+      
+      <p class="text-muted-foreground mb-2 text-sm">
+        Currently studying Software Engineering (Rekayasa Perangkat Lunak) at SMK, graduating this year. Started my journey as a CTF player while learning to code, chasing puzzles like stars in the night.
+      </p>
+      
       <p class="text-muted-foreground text-sm">
-        To use this template, check out the <Link
-          href="https://github.com/jktrn/astro-erudite"
-          class="text-foreground"
-          underline
-          external>GitHub</Link
-        > repository. To learn more about why this template exists, read this blog
-        post: <Link
-          href="/blog/the-state-of-static-blogs"
-          class="text-foreground"
-          underline>The State of Static Blogs in 2024</Link
-        >.
+        Currently doing my internship (PKL) at Steradian Data Optima as a Backend Developer, where I'm gaining hands-on experience in building server-side applications and working with real-world production systems.
       </p>
     </div>
   </section>
+  
+  <MusicPresence />
+  
   <section class="flex flex-col gap-y-4">
     <h2 class="text-2xl font-medium">Latest posts</h2>
     <ul class="flex flex-col gap-y-4">
