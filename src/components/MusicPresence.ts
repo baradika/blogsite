@@ -1,6 +1,6 @@
 const CACHE_KEY = 'lastfm-last-played';
-const CACHE_DURATION = 8 * 60 * 1000;
-const MAX_RETRIES = 3;
+const CACHE_DURATION = 15 * 60 * 1000; // 15 minutes
+const MAX_RETRIES = 2; // Reduced for faster failure
 
 const USERNAME = 'baradika';
 const API_KEY = '27ff964552f4b4eeba3cee11bd08b86f';
@@ -47,7 +47,7 @@ function setCachedTrack(track: Track): void {
 async function fetchTrackWithRetry(retries = MAX_RETRIES): Promise<Track | null> {
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000);
+    const timeoutId = setTimeout(() => controller.abort(), 3000); // 3s timeout for faster UX
 
     const response = await fetch(API_URL, {
       signal: controller.signal,
@@ -141,14 +141,21 @@ export function initMusicPresence(container: HTMLElement) {
 
   const cached = getCachedTrack();
   if (cached) {
+    // Stale-while-revalidate: show cached data immediately
     renderTrack(container, cached);
+    
+    // Silently update in background without re-rendering skeleton
     fetchTrackWithRetry().then(track => {
       if (track) {
         setCachedTrack(track);
-        renderTrack(container, track);
+        // Only re-render if data changed
+        if (JSON.stringify(track) !== JSON.stringify(cached)) {
+          renderTrack(container, track);
+        }
       }
     });
   } else {
+    // No cache: show skeleton while fetching
     fetchTrackWithRetry().then(track => {
       renderTrack(container, track);
       if (track) {
