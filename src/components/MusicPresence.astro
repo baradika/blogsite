@@ -59,13 +59,18 @@ import { Icon } from 'astro-icon/components';
 <script>
   import { initMusicPresence } from './MusicPresence';
 
-  const onIdle = (cb: IdleRequestCallback) =>
-    (window.requestIdleCallback || ((cb) => setTimeout(cb, 1)))(cb);
-
-  onIdle(() => {
+  // Execute immediately on DOMContentLoaded for faster performance
+  function init() {
     const container = document.getElementById('music-presence') as HTMLDivElement | null;
     if (container) {
       initMusicPresence(container);
     }
-  });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    // DOM already loaded, execute immediately
+    init();
+  }
 </script>

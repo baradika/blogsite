@@ -33,6 +33,11 @@ import Favicons from './Favicons.astro'
     media="(prefers-color-scheme: light)"
   />
 
+
+  <!-- Resource hints for faster loading -->
+  <link rel="preconnect" href="https://ws.audioscrobbler.com" crossorigin />
+  <link rel="dns-prefetch" href="https://ws.audioscrobbler.com" />
+  
   <link rel="sitemap" href="/sitemap-index.xml" />
   <link rel="manifest" href="/site.webmanifest" />
   <link

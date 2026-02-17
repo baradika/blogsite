@@ -47,7 +47,7 @@ function setCachedTrack(track: Track): void {
 async function fetchTrackWithRetry(retries = MAX_RETRIES): Promise<Track | null> {
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3000); // 3s timeout for faster UX
+    const timeoutId = setTimeout(() => controller.abort(), 2000); // 2s timeout with DNS preconnect
 
     const response = await fetch(API_URL, {
       signal: controller.signal,
