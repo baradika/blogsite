@@ -6,6 +6,10 @@ interface Props {
 }
 
 const { src, title, height = '600px' } = Astro.props
+
+// Get the full URL for the PDF
+const url = new URL(src, Astro.url)
+const pdfUrl = url.toString()
 ---
 
 <div class="pdf-viewer-container not-prose my-6 overflow-hidden rounded-lg border">
@@ -35,34 +39,145 @@ const { src, title, height = '600px' } = Astro.props
         >{title || 'PDF Document'}</span
       >
     </div>
-    <a
-      href={src}
-      download
-      class="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-sm transition-colors"
-    >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+    <div class="flex items-center gap-2">
+      <a
+        href={src}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-sm transition-colors"
       >
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-        <polyline points="7 10 12 15 17 10"></polyline>
-        <line x1="12" x2="12" y1="15" y2="3"></line>
-      </svg>
-      Download
-    </a>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <line x1="10" x2="21" y1="14" y2="3"></line>
+        </svg>
+        Open
+      </a>
+      <a
+        href={src}
+        download
+        class="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-sm transition-colors"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" x2="12" y1="15" y2="3"></line>
+        </svg>
+        Download
+      </a>
+    </div>
   </div>
+  
+  <!-- Desktop: Direct iframe -->
   <iframe
     src={src}
-    class="w-full"
+    class="pdf-iframe w-full hidden md:block"
     style={`height: ${height}`}
     title={title || 'PDF Document'}
     frameborder="0"
   ></iframe>
+  
+  <!-- Mobile: Fallback with message -->
+  <div class="mobile-pdf-fallback md:hidden bg-muted/50 flex flex-col items-center justify-center p-8 text-center" style={`height: ${height}`}>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="48"
+      height="48"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="text-muted-foreground mb-4"
+    >
+      <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+      <polyline points="14 2 14 8 20 8"></polyline>
+    </svg>
+    <h3 class="text-lg font-semibold mb-2">PDF Preview Not Available</h3>
+    <p class="text-muted-foreground mb-4 text-sm">
+      PDF preview is not supported on mobile browsers. Please download or open in a new tab to view.
+    </p>
+    <div class="flex gap-2">
+      <a
+        href={src}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors text-sm font-medium"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <line x1="10" x2="21" y1="14" y2="3"></line>
+        </svg>
+        Open PDF
+      </a>
+      <a
+        href={src}
+        download
+        class="inline-flex items-center gap-2 px-4 py-2 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/80 transition-colors text-sm font-medium"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" x2="12" y1="15" y2="3"></line>
+        </svg>
+        Download
+      </a>
+    </div>
+  </div>
 </div>
+
+<script>
+  // Add error handling for iframe loading
+  document.addEventListener('DOMContentLoaded', () => {
+    const iframes = document.querySelectorAll('.pdf-iframe');
+    
+    iframes.forEach((iframe) => {
+      iframe.addEventListener('error', () => {
+        console.error('Failed to load PDF in iframe');
+        // Could show fallback here if needed
+      });
+    });
+  });
+</script>
