@@ -47,18 +47,23 @@ const socialLinks: SocialLink[] = [
     <div class="flex grow flex-col justify-between gap-y-4">
       <div>
         <div class="flex flex-wrap items-center gap-x-2">
-          <div class="inline-grid h-7 overflow-hidden">
+          <div
+            class={cn(
+              'inline-grid h-7 overflow-hidden',
+              fullName && 'author-name-swap',
+            )}
+          >
             <h3
               class={cn(
-                'col-start-1 row-start-1 text-lg font-medium transition-transform duration-300',
-                fullName && 'group-hover:-translate-y-full',
+                'col-start-1 row-start-1 text-lg font-medium',
+                fullName && 'author-name-primary',
               )}
             >
               {name}
             </h3>
             {
               fullName && (
-                <h3 class="col-start-1 row-start-1 translate-y-full text-lg font-medium text-nowrap transition-transform duration-300 group-hover:translate-y-0">
+                <h3 class="author-name-secondary col-start-1 row-start-1 text-lg font-medium text-nowrap">
                   {fullName}
                 </h3>
               )
@@ -76,3 +81,53 @@ const socialLinks: SocialLink[] = [
     </div>
   </div>
 </div>
+
+<style>
+  .author-name-swap .author-name-primary,
+  .author-name-swap .author-name-secondary {
+    animation-duration: 6s;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+  }
+
+  .author-name-swap .author-name-primary {
+    animation-name: author-name-primary-swap;
+  }
+
+  .author-name-swap .author-name-secondary {
+    transform: translateY(100%);
+    animation-name: author-name-secondary-swap;
+  }
+
+  @keyframes author-name-primary-swap {
+    0%,
+    42% {
+      transform: translateY(0);
+    }
+
+    50%,
+    92% {
+      transform: translateY(-100%);
+    }
+
+    100% {
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes author-name-secondary-swap {
+    0%,
+    42% {
+      transform: translateY(100%);
+    }
+
+    50%,
+    92% {
+      transform: translateY(0);
+    }
+
+    100% {
+      transform: translateY(100%);
+    }
+  }
+</style>
