@@ -59,7 +59,6 @@ import { Icon } from 'astro-icon/components';
 <script>
   import { initMusicPresence } from './MusicPresence';
 
-  // Execute immediately on DOMContentLoaded for faster performance
   function init() {
     const container = document.getElementById('music-presence') as HTMLDivElement | null;
     if (container) {
@@ -70,7 +69,9 @@ import { Icon } from 'astro-icon/components';
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
-    // DOM already loaded, execute immediately
     init();
   }
+
+  document.addEventListener('astro:page-load', init);
+  document.addEventListener('astro:after-swap', init);
 </script>

@@ -1,6 +1,10 @@
 import { getCollection, render, type CollectionEntry } from 'astro:content'
 import { readingTime, calculateWordCountFromHtml } from '@/lib/utils'
 
+function normalizeTag(tag: string): string {
+  return tag.trim().toLowerCase()
+}
+
 export async function getAllAuthors(): Promise<CollectionEntry<'authors'>[]> {
   return await getCollection('authors')
 }
@@ -30,14 +34,22 @@ export async function getAllProjects(): Promise<CollectionEntry<'projects'>[]> {
   })
 }
 
-export async function getAllTags(): Promise<Map<string, number>> {
+export async function getAllTags(): Promise<Map<string, { tag: string; count: number }>> {
   const posts = await getAllPosts()
   return posts.reduce((acc, post) => {
     post.data.tags?.forEach((tag) => {
-      acc.set(tag, (acc.get(tag) || 0) + 1)
+      const normalizedTag = normalizeTag(tag)
+      const current = acc.get(normalizedTag)
+
+      if (current) {
+        current.count += 1
+        return
+      }
+
+      acc.set(normalizedTag, { tag, count: 1 })
     })
     return acc
-  }, new Map<string, number>())
+  }, new Map<string, { tag: string; count: number }>())
 }
 
 export async function getAdjacentPosts(currentId: string): Promise<{
@@ -110,7 +122,11 @@ export async function getPostsByTag(
   tag: string,
 ): Promise<CollectionEntry<'blog'>[]> {
   const posts = await getAllPosts()
-  return posts.filter((post) => post.data.tags?.includes(tag))
+  const normalizedTag = normalizeTag(tag)
+
+  return posts.filter((post) =>
+    post.data.tags?.some((postTag) => normalizeTag(postTag) === normalizedTag),
+  )
 }
 
 export async function getRecentPosts(
@@ -124,8 +140,7 @@ export async function getSortedTags(): Promise<
   { tag: string; count: number }[]
 > {
   const tagCounts = await getAllTags()
-  return [...tagCounts.entries()]
-    .map(([tag, count]) => ({ tag, count }))
+  return [...tagCounts.values()]
     .sort((a, b) => {
       const countDiff = b.count - a.count
       return countDiff !== 0 ? countDiff : a.tag.localeCompare(b.tag)

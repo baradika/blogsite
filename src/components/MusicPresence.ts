@@ -20,6 +20,8 @@ type CachedData = {
   timestamp: number;
 };
 
+const pendingContainers = new WeakSet<HTMLElement>();
+
 function getCachedTrack(): Track | null {
   try {
     const cached = localStorage.getItem(CACHE_KEY);
@@ -138,11 +140,22 @@ function renderTrack(container: HTMLElement, track: Track | null) {
 
 export function initMusicPresence(container: HTMLElement) {
   if (!container) return;
+  if (pendingContainers.has(container)) return;
+
+  const content = container.querySelector('#music-content');
+  const skeleton = container.querySelector('#music-skeleton');
+
+  if (content?.classList.contains('flex') || !skeleton) {
+    return;
+  }
+
+  pendingContainers.add(container);
 
   const cached = getCachedTrack();
   if (cached) {
     // Stale-while-revalidate: show cached data immediately
     renderTrack(container, cached);
+    pendingContainers.delete(container);
     
     // Silently update in background without re-rendering skeleton
     fetchTrackWithRetry().then(track => {
@@ -161,6 +174,8 @@ export function initMusicPresence(container: HTMLElement) {
       if (track) {
         setCachedTrack(track);
       }
+    }).finally(() => {
+      pendingContainers.delete(container);
     });
   }
 }
