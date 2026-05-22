@@ -1,0 +1,138 @@
+---
+title: 'six cves in one open-source e-commerce project'
+description: 'how i reported six shopper cves spanning authorization bypass, privilege escalation, race conditions, idor, and xss'
+date: 2026-05-22
+tags: ['vulnerability', 'advisory', 'cve', 'web exploitation', 'laravel']
+authors: ['b4r']
+image: './a.png'
+---
+
+## TL;DR
+
+I recently got **six CVEs** in **Shopper**, an open-source e-commerce platform built on Laravel.
+
+Getting multiple issues in one target is always nice, but what made this one memorable was how varied the bugs were.
+
+In the same codebase, I ended up with:
+
+- authorization bypasses
+- RBAC privilege escalation
+- discount race conditions
+- IDOR
+- sensitive data disclosure
+- stored XSS
+
+All six were fixed in **`2.8.0`**, so the affected range is basically everything **before `2.8.0`**.
+
+## Why I liked this target
+
+When I look at e-commerce targets, I usually expect the good stuff to be around:
+
+- checkout
+- discounts
+- order state
+- admin actions
+- anything that can affect money or permissions
+
+Shopper delivered on that pretty hard.
+
+Some of the bugs were classic "you forgot authorization here" bugs. Some were much more fun, especially the discount race condition and the team settings issue. And then there was the Livewire stuff, which kept turning small trust mistakes into real attack surface.
+
+## The six CVEs
+
+| CVE | Severity | Summary |
+| --- | --- | --- |
+| [CVE-2026-47740](https://github.com/shopperlabs/shopper/security/advisories/GHSA-f946-9qp6-vgch) | High | Missing authorization on order mutation actions in the admin panel allowed low-privilege authenticated users to mutate order state without the required write permissions. |
+| [CVE-2026-47741](https://github.com/shopperlabs/shopper/security/advisories/GHSA-9rh9-hf3w-9fgg) | Moderate | A discount race condition allowed silent over-redemption under concurrent checkout pressure, and the per-user usage limit logic was effectively bypassed. |
+| [CVE-2026-47742](https://github.com/shopperlabs/shopper/security/advisories/GHSA-h4mp-g9c6-xwph) | Moderate | Product editor sub-form Livewire components accepted unauthorized `store()` actions, so authenticated panel users could modify product data without the required permission. |
+| [CVE-2026-47744](https://github.com/shopperlabs/shopper/security/advisories/GHSA-c3qp-2ggw-xjg7) | Critical | Team settings contained authorization defects that let authenticated panel users take over the RBAC system itself. |
+| [CVE-2026-47745](https://github.com/shopperlabs/shopper/security/advisories/GHSA-fxqw-97cc-7g5c) | Moderate | Payment methods, currencies, and carriers exposed inline toggles and record actions without proper per-action authorization checks. |
+| [CVE-2026-47743](https://github.com/shopperlabs/shopper/security/advisories/GHSA-hr9v-r8r2-hg7j) | High | Multiple admin Livewire issues led to data tampering, sensitive data disclosure, and stored XSS. |
+
+## The ones I found most interesting
+
+### CVE-2026-47744
+
+This was the standout one for me.
+
+It was not just "one missing check." It was a team settings issue that let an authenticated panel user get into RBAC territory they were never supposed to control.
+
+According to the advisory, the two main problems were:
+
+- `Settings/Team/Index` missing `mount()` authorization
+- `Settings/Team/RolePermission` using a read-only permission to guard write actions
+
+Once I saw that, it was obvious this was not just another admin panel auth bug. If you can mess with team permissions, you are not attacking one feature anymore. You are attacking the permission model itself.
+
+### CVE-2026-47741
+
+This one was fun for a different reason.
+
+It was a **race condition** on discount usage limits, not a simple access control miss.
+
+The kind of bug that is easy to underestimate, because the app still "looks fine" in normal usage. But once you think about concurrent checkout pressure, the whole thing changes. A merchant can silently over-accept discounted orders even though the configured `usage_limit` says otherwise.
+
+There was also a related problem around per-user limits not being counted the way the validation logic expected. So it was not just a race, it was also bad accounting.
+
+I like bugs like this because they are not loud. There is no flashy exploit chain. It is just broken business logic with real money impact.
+
+### CVE-2026-47743
+
+This one bundled three bug classes together:
+
+- IDOR via unlocked Livewire properties
+- plaintext password exposure through a hidden field flow
+- stored XSS on product barcode
+
+That is a pretty good example of why I keep an eye on Livewire-heavy admin panels. Once a component starts trusting client-controlled state too much, weird things happen fast.
+
+The stored XSS part was especially nice because it was not buried in some exotic sink. It was sitting on product barcode rendering.
+
+### The rest of the set
+
+The other three CVEs were less dramatic individually, but together they painted a very clear picture:
+
+- `CVE-2026-47740` showed missing authorization on order mutation actions
+- `CVE-2026-47742` showed the same kind of trust problem on product editor sub-forms
+- `CVE-2026-47745` showed per-action authorization gaps on payment methods, currencies, and carriers
+
+So the pattern was not isolated. It repeated across different admin workflows.
+
+That is usually what makes a target really satisfying to audit: not just one lucky bug, but a repeated failure pattern.
+
+## What made the set interesting
+
+What I liked here was the range.
+
+This was not six copies of the same bug. It was:
+
+- access control failures
+- privilege escalation
+- race condition logic bugs
+- component state abuse
+- data exposure
+- XSS
+
+That is the kind of set that makes a target memorable.
+
+## Fixed version
+
+All six advisories were patched in **`2.8.0`**.
+
+So if you are just tracking the affected line for writeup purposes, the clean boundary is:
+
+- affected: versions before `2.8.0`
+- patched: `2.8.0`
+
+## CVE mapping
+
+- `CVE-2026-47740` - [GHSA-f946-9qp6-vgch](https://github.com/shopperlabs/shopper/security/advisories/GHSA-f946-9qp6-vgch)
+- `CVE-2026-47741` - [GHSA-9rh9-hf3w-9fgg](https://github.com/shopperlabs/shopper/security/advisories/GHSA-9rh9-hf3w-9fgg)
+- `CVE-2026-47742` - [GHSA-h4mp-g9c6-xwph](https://github.com/shopperlabs/shopper/security/advisories/GHSA-h4mp-g9c6-xwph)
+- `CVE-2026-47743` - [GHSA-hr9v-r8r2-hg7j](https://github.com/shopperlabs/shopper/security/advisories/GHSA-hr9v-r8r2-hg7j)
+- `CVE-2026-47744` - [GHSA-c3qp-2ggw-xjg7](https://github.com/shopperlabs/shopper/security/advisories/GHSA-c3qp-2ggw-xjg7)
+- `CVE-2026-47745` - [GHSA-fxqw-97cc-7g5c](https://github.com/shopperlabs/shopper/security/advisories/GHSA-fxqw-97cc-7g5c)
+
+## Final note
+
+As of **May 22, 2026**, all six were publicly listed on GitHub advisory pages with the CVE IDs above.
