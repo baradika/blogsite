@@ -1,0 +1,128 @@
+---
+title: 'two quiet wallos bugs that still became CVEs'
+description: 'cve-2026-50198 and cve-2026-50199 in wallos were both small authenticated trust bugs, but both still crossed user boundaries in ways they should not have'
+date: 2026-06-05
+tags: ['vulnerability', 'cve', 'web exploitation']
+authors: ['b4r']
+image: './a.png'
+---
+
+## TL;DR
+
+I picked up two CVEs in **Wallos**:
+
+- `CVE-2026-50198`
+- `CVE-2026-50199`
+
+Neither of them was some huge flashy bug. No RCE, no auth bypass, no full account takeover.
+
+But I still liked both of them because they came from the same kind of mistake: user-controlled state was accepted in one place, then trusted later without being tied back to the right user.
+
+That kind of bug is easy to underestimate until you actually trace what the application does with the foreign reference.
+
+## The two bugs
+
+### CVE-2026-50198
+
+This one was published as:
+
+`Cross-user subscription cost inference via replacement_subscription_id`
+
+The issue was in how Wallos handled `replacement_subscription_id` on inactive subscriptions.
+
+An authenticated normal user could edit **their own** inactive subscription and point `replacement_subscription_id` at another user's subscription ID. The write was accepted. Later, the stats logic dereferenced that foreign ID without scoping the lookup back to the current user.
+
+So this was not direct object disclosure in the usual sense. The app did not suddenly return the victim subscription row in full.
+
+What it did leak was still real: the attacker could infer another user's **monthly-normalized subscription cost** by watching how their own stats changed after swapping in victim subscription IDs.
+
+That made this bug interesting to me, because the obvious read path had already been blocked.
+
+According to the advisory:
+
+- direct cross-user subscription reads were denied
+- direct writes against the victim subscription row were not confirmed
+- the leak only showed up after the attacker stored a foreign `replacement_subscription_id` in their **own** record and waited for the stats logic to consume it
+
+So the bug lived in the gap between "write accepted" and "foreign reference trusted later."
+
+## Why it mattered
+
+The confirmed impact was limited, but not fake.
+
+The attacker could infer financial metadata from another user's subscriptions without direct read access to that subscription object. That is enough to cross a real tenant boundary, even if the leak is derived rather than raw.
+
+The public advisory lists it as:
+
+- CVE: `CVE-2026-50198`
+- Severity: `Moderate`
+- CVSS: `4.3`
+- Vector: `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N`
+- Affected: `4.9.0`
+- Patched: `4.9.1`
+
+## CVE-2026-50199
+
+The second one was published as:
+
+`Cross-user Fixer/API Layer credential consumption in exchange-rate refresh`
+
+This one was cleaner.
+
+`endpoints/currency/update_exchange.php` loaded the first Fixer/API Layer credential **globally**, instead of loading the credential for the authenticated user making the request.
+
+That meant a normal authenticated user with **no provider key of their own** could still trigger exchange-rate refreshes using another user's stored provider credential.
+
+The raw API key was not returned to the attacker, and that boundary matters.
+
+But the attacker could still:
+
+- trigger outbound provider requests with another user's stored credential
+- consume another user's provider quota
+- update their own exchange-rate data through a credential they did not own
+
+That is the kind of bug that looks "small" if you only care about direct key disclosure, but the authorization failure is still real. Ownership of a secret-backed integration matters even when the secret itself is not printed back in the response.
+
+## Why I liked this one too
+
+The best part of this one was the negative control.
+
+When the `fixer` table was empty, the endpoint behaved as expected and skipped the update because there was no API key.
+
+But once another user's Fixer row existed, the same request started working for the attacker.
+
+That makes the bug very easy to explain:
+
+1. attacker has no provider row
+2. request should fail
+3. it only succeeds because another user's credential is loaded globally
+
+That is a clean cross-user trust failure.
+
+The public advisory lists it as:
+
+- CVE: `CVE-2026-50199`
+- Severity: `Moderate`
+- CVSS: `4.3`
+- Vector: `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:L/A:N`
+- Affected: `4.9.0`
+- Patched: `4.9.1`
+
+## The shared pattern
+
+What I liked about this pair is that both bugs came from the same broad problem:
+
+- user A's state was allowed to influence user B's outcome
+- the app trusted a cross-user reference later than it should have
+- the normal UI boundaries did not match what the backend actually accepted
+
+`CVE-2026-50198` leaked derived financial data through a foreign subscription reference.
+
+`CVE-2026-50199` let one user spend and use another user's integration credential indirectly.
+
+Different impact, same smell.
+
+## References
+
+- [GHSA-hggr-v8rm-c6jj / CVE-2026-50198](https://github.com/ellite/Wallos/security/advisories/GHSA-hggr-v8rm-c6jj)
+- [GHSA-5wf4-m4hj-rxj5 / CVE-2026-50199](https://github.com/ellite/Wallos/security/advisories/GHSA-5wf4-m4hj-rxj5)
