@@ -10,6 +10,17 @@ export type CVEEntry = {
 
 const cveEntries: CVEEntry[] = [
   {
+    id: 'CVE-2026-49355',
+    packageName: 'OpenProject',
+    severity: 'Moderate',
+    summary:
+      'The single meeting agenda item API disclosed private work package data from a linked work package in an inaccessible project.',
+    advisoryUrl:
+      'https://github.com/opf/openproject/security/advisories/GHSA-g387-6rm2-xw88',
+    blogUrl: '/blog/openproject-cve-2026-49355',
+    date: new Date('2026-06-08'),
+  },
+  {
     id: 'CVE-2026-50199',
     packageName: 'Wallos',
     severity: 'Moderate',
