@@ -10,6 +10,28 @@ export type CVEEntry = {
 
 const cveEntries: CVEEntry[] = [
   {
+    id: 'CVE-2026-53634',
+    packageName: 'Sharp',
+    severity: 'Moderate',
+    summary:
+      'Quick Creation Command endpoints missed create authorization checks and let authenticated Sharp users bypass create permission on configured entities.',
+    advisoryUrl:
+      'https://github.com/code16/sharp/security/advisories/GHSA-vmwx-m75v-qvch',
+    blogUrl: '/blog/sharp-cve-2026-53634',
+    date: new Date('2026-06-10'),
+  },
+  {
+    id: 'CVE-2026-53521',
+    packageName: 'Nezha',
+    severity: 'Moderate',
+    summary:
+      'A stored future DDNS profile ID could later resolve to another user profile and be consumed by the DDNS worker in attacker server context.',
+    advisoryUrl:
+      'https://github.com/nezhahq/nezha/security/advisories/GHSA-39g2-8x68-pmx8',
+    blogUrl: '/blog/nezha-cve-2026-53521',
+    date: new Date('2026-06-10'),
+  },
+  {
     id: 'CVE-2026-49355',
     packageName: 'OpenProject',
     severity: 'Moderate',
