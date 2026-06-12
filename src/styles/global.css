@@ -4,22 +4,27 @@
 
 @theme inline {
   --font-sans:
-    'Berkeley Mono', 'IBM Plex Mono', 'Geist Mono', ui-monospace,
-    SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
-    'Courier New', monospace;
+    'IBM Plex Mono', 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, 'Liberation Mono', 'Courier New', monospace;
   --font-mono:
-    'Berkeley Mono', 'IBM Plex Mono', 'Geist Mono', ui-monospace,
+    'IBM Plex Mono', 'Geist Mono', ui-monospace,
     SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
     'Courier New', monospace;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
 
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
 
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
 
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
@@ -45,35 +50,61 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --background: #faf5e6;
+  --foreground: #14270f;
+  --card: #fcf8ed;
+  --card-foreground: #14270f;
+  --primary: #1e6626;
+  --primary-foreground: #faf5e6;
+  --secondary: #f2ebd9;
+  --secondary-foreground: #1b451e;
+  --muted: #ede8d9;
+  --muted-foreground: #576953;
+  --accent: #e9e2c4;
+  --accent-foreground: #1b451e;
+  --destructive: #cc272e;
+  --destructive-foreground: #faf5e6;
+  --border: #ddd8c2;
+  --ring: #1e6626;
 }
 
 [data-theme='dark'] {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --ring: oklch(0.556 0 0);
+  --background: #091509;
+  --foreground: #ebe4d2;
+  --card: #101f10;
+  --card-foreground: #ebe4d2;
+  --primary: #c2ad61;
+  --primary-foreground: #091b0a;
+  --secondary: #172617;
+  --secondary-foreground: #dcd7c9;
+  --muted: #182619;
+  --muted-foreground: #959074;
+  --accent: #1c2e1c;
+  --accent-foreground: #dcd7c9;
+  --destructive: #d74745;
+  --destructive-foreground: #f6e7df;
+  --border: #213321;
+  --ring: #c2ad61;
 }
 
 @layer base {
+  html {
+    @apply antialiased;
+  }
+
   *,
   ::after,
   ::before,
   ::backdrop,
   ::file-selector-button {
-    @apply border-border outline-ring/50 tracking-tight;
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  ::selection {
+    @apply bg-primary text-primary-foreground;
   }
 }

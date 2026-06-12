@@ -1,71 +1,44 @@
 ---
 import BlogCard from '@/components/BlogCard.astro'
 import Link from '@/components/Link.astro'
+import MusicPresence from '@/components/MusicPresence.astro'
 import PageHead from '@/components/PageHead.astro'
 import { buttonVariants } from '@/components/ui/button'
 import { SITE } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
 import { getRecentPosts } from '@/lib/data-utils'
-import MusicPresence from '@/components/MusicPresence.astro'
 
 const blog = await getRecentPosts(SITE.featuredPostCount)
 ---
 
 <Layout class="max-w-3xl">
   <PageHead slot="head" title="Home" />
-  <section class="rounded-lg border">
-    <div class="flex flex-col space-y-1.5 p-6">
-      <h3 class="text-3xl leading-none font-medium">b4r</h3>
-      <p class="text-muted-foreground text-sm">
-        /ˈbar/ &bull; <span class="font-medium">nouns</span>
+  <section class="overflow-hidden rounded-lg bg-background">
+    <img
+      src="/hero.png"
+      alt="Baradika's Blog hero illustration"
+      class="block h-auto w-full"
+      loading="eager"
+    />
+  </section>
+  <section class="bg-background rounded-lg">
+    <div class="p-6">
+      <p class="text-muted-foreground mb-4 text-base leading-8 sm:text-lg">
+        Security Researcher and CTF Player with @Try4gain. Mostly into reverse
+        engineering, forensics, web exploitation, and linux. I like writing
+        about real-world bugs, challenge write-ups, and the process behind
+        finding, reproducing, and understanding security issues.
       </p>
-    </div>
-    <div class="p-6 pt-0">
-      <p class="text-muted-foreground mb-2 text-sm">
-        Security Researcher and
-        <a
-          href="https://ctftime.org/team/404184/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="mx-1 inline-flex align-[-0.15em]"
-          aria-label="Open Try4gain on CTFTIME"
-        >
-          <img
-            src="https://ctftime.org/static/img/s/32x32.png"
-            alt="CTFTIME"
-            class="size-4"
-          />
-        </a>
-        CTF Player with @Try4gain. Mostly into
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Ghidra_Logo.png"
-          alt="IDA"
-          class="mx-1 inline-block size-4 align-[-0.15em]"
-        />
-        reverse engineering,
-        <img
-          src="https://cdn.simpleicons.org/wireshark"
-          alt="Wireshark"
-          class="mx-1 inline-block size-4 align-[-0.15em]"
-        />
-        forensics,
-        <img
-          src="https://cdn.simpleicons.org/curl"
-          alt="curl"
-          class="mx-1 inline-block size-4 align-[-0.15em]"
-        />
-        web exploitation, and
-        linux.
-      </p>
-      
-      <p class="text-muted-foreground mb-2 text-sm">
-        Besides security shit, I enjoy playing a pixel art games and watching anime.
+
+      <p class="text-muted-foreground text-base leading-8 sm:text-lg">
+        Besides security shit, I enjoy playing pixel art games, watching anime,
+        and spending time poking at weird systems until they make sense.
       </p>
     </div>
   </section>
-  
+
   <MusicPresence />
-  
+
   <section class="flex flex-col gap-y-4">
     <h2 class="text-2xl font-medium">Latest posts</h2>
     <ul class="flex flex-col gap-y-4">

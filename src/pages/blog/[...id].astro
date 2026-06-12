@@ -108,18 +108,6 @@ const tocSections = await getTOCSections(currentPostId)
       />
     </div>
 
-    {
-      post.data.image && (
-        <Image
-          src={post.data.image}
-          alt={post.data.title}
-          width={1200}
-          height={630}
-          class="col-span-full mx-auto w-full max-w-5xl object-cover"
-        />
-      )
-    }
-
     <section class="col-start-2 flex flex-col gap-y-6 text-center">
       <div class="flex flex-col">
         <h1
@@ -225,6 +213,12 @@ const tocSections = await getTOCSections(currentPostId)
 
     <article class="prose col-start-2 max-w-none">
       <Content />
+      <img
+        src="/blogpost.png"
+        alt="Thanks for reading this blog post all the way to the end"
+        class="mx-auto mt-10 w-full"
+        loading="lazy"
+      />
     </article>
 
     {
