@@ -13,26 +13,26 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
 
 <Layout class="max-w-3xl">
   <PageHead slot="head" title="Home" />
-  <section class="overflow-hidden rounded-lg bg-background">
+  <section class="bg-background overflow-hidden rounded-lg">
     <img
       src="/hero.png"
       alt="Baradika's Blog hero illustration"
       class="block h-auto w-full"
       loading="eager"
+      fetchpriority="high"
     />
   </section>
   <section class="bg-background rounded-lg">
     <div class="p-6">
       <p class="text-muted-foreground mb-4 text-base leading-8 sm:text-lg">
-        Security Researcher and CTF Player with @Try4gain. Mostly into reverse
-        engineering, forensics, web exploitation, and linux. I like writing
-        about real-world bugs, challenge write-ups, and the process behind
-        finding, reproducing, and understanding security issues.
+        Welcome to my blog. I’m a security researcher and CTF player, and this
+        is where I write about reverse engineering, forensics, web exploitation,
+        Linux, and the process behind finding and understanding security issues.
       </p>
 
       <p class="text-muted-foreground text-base leading-8 sm:text-lg">
-        Besides security shit, I enjoy playing pixel art games, watching anime,
-        and spending time poking at weird systems until they make sense.
+        You’ll mostly find write-ups, CVEs, notes, and other things I’ve been
+        learning, breaking, or digging into lately.
       </p>
     </div>
   </section>
@@ -40,7 +40,12 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
   <MusicPresence />
 
   <section class="flex flex-col gap-y-4">
-    <h2 class="text-2xl font-medium">Latest posts</h2>
+    <img
+      src="/latestposts.png"
+      alt="Latest posts"
+      class="mx-auto block h-auto w-full max-w-md"
+      loading="lazy"
+    />
     <ul class="flex flex-col gap-y-4">
       {
         blog.map((post) => (

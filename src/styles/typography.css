@@ -21,7 +21,7 @@
   }
 
   p {
-    @apply text-pretty;
+    @apply text-pretty text-justify;
   }
 }
 
@@ -30,7 +30,7 @@
     @apply text-foreground text-base leading-7;
 
     :where(p):not(:where(.not-prose, .not-prose *)) {
-      @apply text-foreground/80 my-5;
+      @apply text-foreground/80 my-5 text-justify;
     }
 
     :where(h1, h2, h3, h4, h5, h6):not(:where(.not-prose, .not-prose *)) {

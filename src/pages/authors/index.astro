@@ -12,17 +12,19 @@ const authors = await getAllAuthors()
   <Breadcrumbs items={[{ label: 'Authors', icon: 'lucide:users' }]} />
   <section class="bg-background overflow-hidden rounded-lg">
     <img
-      src="/me.png"
+      src="/terminal.png"
       alt="Author page illustration"
       class="block h-auto w-full"
       loading="eager"
+      fetchpriority="high"
     />
   </section>
   <section class="bg-background rounded-lg">
     <div class="p-6">
       <p class="text-muted-foreground mb-4 text-base leading-8 sm:text-lg">
         Hi!! i'm Fase Rais Baradika but I go by b4r. I was a greek security
-        researcher and CTF player.
+        researcher and CTF player. I'm 19yo (just finished my vocational
+        highschool) and start my journey to university
       </p>
       <p class="text-muted-foreground text-base leading-8 sm:text-lg">
         i love to break system, like web and mobile applications. i like modding
