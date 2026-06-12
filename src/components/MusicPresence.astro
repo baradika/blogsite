@@ -5,19 +5,35 @@ import { Icon } from 'astro-icon/components';
 <div class="rounded-lg">
   <div
     id="music-presence"
-    class="relative flex flex-col justify-between gap-4 p-6"
+    class="music-presence relative flex flex-col gap-4 overflow-hidden rounded-lg bg-background p-6"
   >
-    <div class="absolute top-6 right-6 text-muted-foreground">
-      <Icon name="lucide:audio-lines" class="w-6 h-6" />
-    </div>
     <!-- Skeleton Loading State -->
     <div id="music-skeleton" class="flex flex-col gap-4">
       <div class="flex items-start gap-4">
-        <div class="w-16 h-16 rounded bg-muted animate-pulse"></div>
+        <div class="size-16 rounded-lg bg-muted animate-pulse"></div>
         <div class="flex-1 space-y-2">
-          <div class="h-5 bg-muted rounded w-3/4 animate-pulse"></div>
-          <div class="h-4 bg-muted rounded w-1/2 animate-pulse"></div>
+          <div class="h-4 w-28 rounded bg-muted animate-pulse"></div>
+          <div class="h-5 w-3/4 rounded bg-muted animate-pulse"></div>
+          <div class="h-4 w-1/2 rounded bg-muted animate-pulse"></div>
         </div>
+        <div class="music-eq hidden items-end gap-1 self-center md:flex">
+          <span class="music-eq-bar h-4 w-1.5 rounded-full bg-muted animate-pulse"></span>
+          <span class="music-eq-bar h-6 w-1.5 rounded-full bg-muted animate-pulse"></span>
+          <span class="music-eq-bar h-3 w-1.5 rounded-full bg-muted animate-pulse"></span>
+        </div>
+      </div>
+      <div class="hidden h-0.5 w-full rounded-full bg-muted md:block"></div>
+    </div>
+
+    <div id="music-empty" class="hidden items-start gap-4">
+      <div class="flex size-16 items-center justify-center rounded-lg bg-muted/70">
+        <Icon name="lucide:music-4" class="size-7 text-muted-foreground" />
+      </div>
+      <div class="min-w-0 flex-1">
+        <p class="mb-1 text-sm font-medium text-foreground">No listening history yet</p>
+        <p class="text-sm text-muted-foreground">
+          This widget will show the latest or currently playing track once data is available.
+        </p>
       </div>
     </div>
 
@@ -26,23 +42,28 @@ import { Icon } from 'astro-icon/components';
       <div class="flex items-start gap-4">
         <img
           id="album-art"
-          class="w-16 h-16 rounded object-cover"
+          class="size-16 rounded-lg object-cover"
           alt="Album Art"
         />
-        <div class="flex-1 min-w-0">
-          <span id="now-playing" class="text-xs text-muted-foreground block mb-1"></span>
-          <div class="flex flex-col gap-0.5">
+        <div class="min-w-0 flex-1">
+          <div class="mb-1 flex items-center gap-2">
+            <span
+              id="now-playing"
+              class="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground"
+            ></span>
+          </div>
+          <div class="flex flex-col gap-1">
             <a
               id="song-link"
               href="#"
               target="_blank"
               rel="noopener noreferrer"
-              class="text-foreground hover:underline group inline-flex items-center gap-1"
+              class="group inline-flex items-center gap-1 text-foreground hover:underline"
             >
               <span id="song-title" class="font-medium truncate"></span>
-              <Icon name="lucide:external-link" class="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+              <Icon name="lucide:external-link" class="h-3 w-3 flex-shrink-0 opacity-0 transition-opacity group-hover:opacity-100" />
             </a>
-            <div class="flex items-center gap-1.5 text-sm text-muted-foreground flex-wrap">
+            <div class="flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground">
               <span id="artist-name"></span>
               <span id="separator-artist-name">•</span>
               <span id="album-name"></span>
@@ -50,11 +71,87 @@ import { Icon } from 'astro-icon/components';
             </div>
           </div>
         </div>
-
+        <div
+          id="equalizer"
+          class="music-eq hidden items-end gap-1 self-center text-primary md:flex"
+          aria-hidden="true"
+        >
+          <span class="music-eq-bar h-3 w-1.5 rounded-full bg-current"></span>
+          <span class="music-eq-bar h-6 w-1.5 rounded-full bg-current"></span>
+          <span class="music-eq-bar h-4 w-1.5 rounded-full bg-current"></span>
+          <span class="music-eq-bar h-5 w-1.5 rounded-full bg-current"></span>
+        </div>
+      </div>
+      <div
+        id="progress-wrap"
+        class="music-progress mt-4 hidden h-0.5 w-full overflow-hidden rounded-full bg-muted/80 md:block"
+      >
+        <div id="progress-bar" class="h-full w-0 rounded-full bg-primary"></div>
       </div>
     </div>
   </div>
 </div>
+
+<style>
+  .music-presence {
+    --music-accent: var(--primary);
+  }
+
+  .music-eq-bar {
+    transform-origin: bottom;
+  }
+
+  .music-presence[data-state='playing'] .music-eq-bar {
+    animation: music-eq 1s ease-in-out infinite;
+  }
+
+  .music-presence[data-state='playing'] .music-eq-bar:nth-child(2) {
+    animation-delay: 0.12s;
+  }
+
+  .music-presence[data-state='playing'] .music-eq-bar:nth-child(3) {
+    animation-delay: 0.24s;
+  }
+
+  .music-presence[data-state='playing'] .music-eq-bar:nth-child(4) {
+    animation-delay: 0.36s;
+  }
+
+  .music-presence[data-state='idle'] .music-eq-bar,
+  .music-presence[data-state='empty'] .music-eq-bar {
+    animation: none;
+    opacity: 0.55;
+  }
+
+  #progress-bar {
+    background: var(--music-accent);
+  }
+
+  #equalizer {
+    color: var(--music-accent);
+  }
+
+  @keyframes music-eq {
+    0%,
+    100% {
+      transform: scaleY(0.45);
+      opacity: 0.55;
+    }
+    50% {
+      transform: scaleY(1);
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .music-presence *,
+    .music-presence *::before,
+    .music-presence *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+</style>
 
 <script>
   import { initMusicPresence } from './MusicPresence';
