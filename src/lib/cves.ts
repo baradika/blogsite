@@ -10,6 +10,17 @@ export type CVEEntry = {
 
 const cveEntries: CVEEntry[] = [
   {
+    id: 'CVE-2026-54258',
+    packageName: 'ZoneMinder',
+    severity: 'Moderate',
+    summary:
+      'Direct event media endpoints let low-privileged users fetch private snapshots, frames, videos, and HLS media from monitors they were denied access to.',
+    advisoryUrl:
+      'https://github.com/ZoneMinder/zoneminder/security/advisories/GHSA-vj5r-pc2v-gfwv',
+    blogUrl: '/blog/zoneminder-cve-2026-54258',
+    date: new Date('2026-06-13'),
+  },
+  {
     id: 'CVE-2026-53634',
     packageName: 'Sharp',
     severity: 'Moderate',
