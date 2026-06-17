@@ -10,6 +10,17 @@ export type CVEEntry = {
 
 const cveEntries: CVEEntry[] = [
   {
+    id: 'CVE-2026-55383',
+    packageName: 'InvoiceShelf',
+    severity: 'High',
+    summary:
+      'Public customer document tokens could cross company boundaries through EmailLog type confusion, and JSON endpoints kept accepting expired tokens.',
+    advisoryUrl:
+      'https://github.com/InvoiceShelf/InvoiceShelf/security/advisories/GHSA-73q7-2953-8gvx',
+    blogUrl: '/blog/invoiceshelf-cve-2026-55383',
+    date: new Date('2026-06-17'),
+  },
+  {
     id: 'CVE-2026-54258',
     packageName: 'ZoneMinder',
     severity: 'Moderate',

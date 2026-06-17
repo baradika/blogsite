@@ -16,7 +16,6 @@ import { remarkPdfEmbed } from './src/lib/remark-pdf-embed'
 
 import { pluginCollapsibleSections } from '@expressive-code/plugin-collapsible-sections'
 import { pluginLineNumbers } from '@expressive-code/plugin-line-numbers'
-import type { ExpressiveCodeTheme } from 'rehype-expressive-code'
 
 import tailwindcss from '@tailwindcss/vite'
 
@@ -60,11 +59,10 @@ export default defineConfig({
       [
         rehypeExpressiveCode,
         {
-          themes: ['github-light', 'github-dark'],
+          themes: ['github-dark'],
           plugins: [pluginCollapsibleSections(), pluginLineNumbers()],
           useDarkModeMediaQuery: false,
-          themeCssSelector: (theme: ExpressiveCodeTheme) =>
-            `[data-theme="${theme.name.split('-')[1]}"]`,
+          themeCssSelector: () => '.expressive-code',
           defaultProps: {
             wrap: true,
             collapseStyle: 'collapsible-auto',
@@ -77,24 +75,21 @@ export default defineConfig({
           },
           styleOverrides: {
             codeFontSize: '0.75rem',
-            borderColor: 'var(--border)',
+            borderColor: 'var(--code-block-border)',
             codeFontFamily: 'var(--font-mono)',
-            codeBackground:
-              'color-mix(in oklab, var(--muted) 25%, transparent)',
+            codeBackground: 'var(--code-block-bg)',
             frames: {
-              editorActiveTabForeground: 'var(--muted-foreground)',
-              editorActiveTabBackground:
-                'color-mix(in oklab, var(--muted) 25%, transparent)',
+              editorActiveTabForeground: 'var(--code-block-foreground)',
+              editorActiveTabBackground: 'var(--code-block-bg)',
               editorActiveTabIndicatorBottomColor: 'transparent',
               editorActiveTabIndicatorTopColor: 'transparent',
               editorTabBorderRadius: '0',
-              editorTabBarBackground: 'transparent',
-              editorTabBarBorderBottomColor: 'transparent',
+              editorTabBarBackground: 'var(--code-block-bg)',
+              editorTabBarBorderBottomColor: 'var(--code-block-border)',
               frameBoxShadowCssValue: 'none',
-              terminalBackground:
-                'color-mix(in oklab, var(--muted) 25%, transparent)',
-              terminalTitlebarBackground: 'transparent',
-              terminalTitlebarBorderBottomColor: 'transparent',
+              terminalBackground: 'var(--code-block-bg)',
+              terminalTitlebarBackground: 'var(--code-block-bg)',
+              terminalTitlebarBorderBottomColor: 'var(--code-block-border)',
               terminalTitlebarForeground: 'var(--muted-foreground)',
             },
             lineNumbers: {
@@ -108,7 +103,7 @@ export default defineConfig({
         rehypeShiki,
         {
           themes: {
-            light: 'github-light',
+            light: 'github-dark',
             dark: 'github-dark',
           },
           inline: 'tailing-curly-colon',

@@ -64,6 +64,17 @@ According to the advisory, the two main problems were:
 
 Once I saw that, it was obvious this was not just another admin panel auth bug. If you can mess with team permissions, you are not attacking one feature anymore. You are attacking the permission model itself.
 
+The technical core of that one was easy to summarize:
+
+```php
+Settings/Team/Index::mount()
+Settings/Team/RolePermission
+view_users
+manage_users
+```
+
+One page skipped the mount-time authorization entirely, and the other one guarded write actions with the wrong permission.
+
 ### CVE-2026-47741
 
 This one was fun for a different reason.
@@ -75,6 +86,17 @@ The kind of bug that is easy to underestimate, because the app still "looks fine
 There was also a related problem around per-user limits not being counted the way the validation logic expected. So it was not just a race, it was also bad accounting.
 
 I like bugs like this because they are not loud. There is no flashy exploit chain. It is just broken business logic with real money impact.
+
+The advisory tied that one to the checkout path directly:
+
+```php
+CreateOrderFromCartAction::execute
+DiscountDetail.total_use
+usage_limit
+usage_limit_per_user
+```
+
+That is the kind of code path I always like to see in a writeup, because it makes the failure mode much more concrete than just saying "coupon race condition."
 
 ### CVE-2026-47743
 
@@ -88,6 +110,17 @@ That is a pretty good example of why I keep an eye on Livewire-heavy admin panel
 
 The stored XSS part was especially nice because it was not buried in some exotic sink. It was sitting on product barcode rendering.
 
+The vulnerable pieces the advisory called out were:
+
+```php
+#[Locked]
+Customers/Create::store()
+DNS1DFacade::getBarcodeHTML()
+{!! !!}
+```
+
+That bundle is useful because it shows the three separate bug classes without needing to dump the entire component code.
+
 ### The rest of the set
 
 The other three CVEs were less dramatic individually, but together they painted a very clear picture:
@@ -97,6 +130,21 @@ The other three CVEs were less dramatic individually, but together they painted 
 - `CVE-2026-47745` showed per-action authorization gaps on payment methods, currencies, and carriers
 
 So the pattern was not isolated. It repeated across different admin workflows.
+
+The advisory pages were still specific enough to leave a technical breadcrumb trail:
+
+```php
+cancel, markPaid, markComplete, capturePayment
+->visible()
+->authorize()
+store()
+edit_products
+edit_payment_methods
+edit_currencies
+edit_carriers
+```
+
+So even in the "simpler" bugs, you could still see the same repeated smell: action methods and component handlers were present, but the real per-action permission gate was missing or too weak.
 
 That is usually what makes a target really satisfying to audit: not just one lucky bug, but a repeated failure pattern.
 
@@ -132,7 +180,3 @@ So if you are just tracking the affected line for writeup purposes, the clean bo
 - `CVE-2026-47743` - [GHSA-hr9v-r8r2-hg7j](https://github.com/shopperlabs/shopper/security/advisories/GHSA-hr9v-r8r2-hg7j)
 - `CVE-2026-47744` - [GHSA-c3qp-2ggw-xjg7](https://github.com/shopperlabs/shopper/security/advisories/GHSA-c3qp-2ggw-xjg7)
 - `CVE-2026-47745` - [GHSA-fxqw-97cc-7g5c](https://github.com/shopperlabs/shopper/security/advisories/GHSA-fxqw-97cc-7g5c)
-
-## Final note
-
-As of **May 22, 2026**, all six were publicly listed on GitHub advisory pages with the CVE IDs above.

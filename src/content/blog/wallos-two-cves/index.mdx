@@ -1,6 +1,6 @@
 ---
-title: 'two quiet wallos bugs that still became CVEs'
-description: 'cve-2026-50198 and cve-2026-50199 in wallos were both small authenticated trust bugs, but both still crossed user boundaries in ways they should not have'
+title: 'two wallos cves from the same trust mistake'
+description: 'cve-2026-50198 and cve-2026-50199 in wallos both came from cross-user references being accepted first and trusted later'
 date: 2026-06-05
 tags: ['vulnerability', 'cve', 'web exploitation']
 authors: ['b4r']
@@ -46,6 +46,22 @@ According to the advisory:
 
 So the bug lived in the gap between "write accepted" and "foreign reference trusted later."
 
+The advisory was specific enough to show the important lookup boundary:
+
+```sql
+SELECT price, currency_id, cycle, frequency
+FROM subscriptions
+WHERE id = :replacementSubscriptionId
+```
+
+And just as important, it called out the missing constraint:
+
+```sql
+AND user_id = :userId
+```
+
+That missing user scope is what turned an otherwise normal reference lookup into a cross-user leak.
+
 ## Why it mattered
 
 The confirmed impact was limited, but not fake.
@@ -60,6 +76,16 @@ The public advisory lists it as:
 - Vector: `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:L/I:N/A:N`
 - Affected: `4.9.0`
 - Patched: `4.9.1`
+
+The write path in the advisory also made the exploit shape easy to follow:
+
+```http
+POST /endpoints/subscription/add.php
+...
+replacement_subscription_id=100
+```
+
+That was the whole setup. The attacker stored the foreign reference in their own inactive subscription, and the leak only appeared later when the stats logic consumed it.
 
 ## CVE-2026-50199
 
@@ -82,6 +108,22 @@ But the attacker could still:
 - update their own exchange-rate data through a credential they did not own
 
 That is the kind of bug that looks "small" if you only care about direct key disclosure, but the authorization failure is still real. Ownership of a secret-backed integration matters even when the secret itself is not printed back in the response.
+
+The advisory made the root cause very blunt:
+
+```sql
+SELECT api_key, provider
+FROM fixer
+```
+
+There was no user scoping in that query. That is what made the endpoint consume another user's provider row.
+
+And the affected request path itself was tiny:
+
+```http
+POST /endpoints/currency/update_exchange.php
+force=true
+```
 
 ## Why I liked this one too
 

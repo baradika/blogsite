@@ -66,6 +66,9 @@
   --destructive-foreground: #faf5e6;
   --border: #ddd8c2;
   --ring: #1e6626;
+  --code-block-bg: #161c14;
+  --code-block-foreground: #f4eedc;
+  --code-block-border: #31402c;
 }
 
 [data-theme='dark'] {
@@ -85,6 +88,9 @@
   --destructive-foreground: #f6e7df;
   --border: #213321;
   --ring: #c2ad61;
+  --code-block-bg: #0d120d;
+  --code-block-foreground: #ebe4d2;
+  --code-block-border: #243124;
 }
 
 @layer base {

@@ -1,0 +1,124 @@
+---
+title: 'bypassing pairip with manual modification'
+description: 'bypassing java-side pairip checks in a modded android app by removing manifest-registered components, rebuilding, and signing again'
+date: 2026-06-17
+tags: ['android', 'mobile modding', 'reverse engineering']
+authors: ['b4r']
+---
+
+## TL;DR
+
+After patching an app, sometimes the next blocker is not SSL pinning anymore. It is PairIP.
+
+If the target only wires PairIP from the Java side, the bypass is usually much less annoying than people expect. No fancy runtime hook, no extra module, no chasing native code first. Just decompile, inspect the manifest, cut the PairIP components, rebuild, sign again, and test.
+
+This note is only about that path.
+
+## When this works
+
+PairIP usually shows up in one of two shapes, and figuring out which one you are dealing with saves a lot of wasted time.
+
+The first one is the lighter integration. The integrity check lives in the Java or Kotlin layer and gets wired in through the manifest. In that case, once you decompile the APK, searching `AndroidManifest.xml` for `pairip` usually gets you straight to the relevant component.
+
+Typical entries look like:
+
+- `activity`
+- `provider`
+- sometimes a `receiver` or `service`
+- a related permission like `com.android.vending.CHECK_LICENSE`
+
+If that is what you see, a manifest edit is worth trying first.
+
+The second one is the heavier integration. If the APK ships something like `libpairip.so` under `lib/arm64-v8a` or another ABI directory, then part of the protection is already sitting in native code. At that point, a manifest-only tweak usually stops being enough.
+
+For the case I wanted to write down here, the target landed in the first bucket. The integrity check was still being registered from the Java side, so the bypass was basically a controlled manifest cleanup.
+
+## The actual edit
+
+Start by decompiling the APK with Apktool:
+
+```bash
+apktool d release.RE.apk
+```
+
+If the decompile finishes cleanly, open `AndroidManifest.xml` from the unpacked project and search for `pairip`.
+
+The important part here is to remove the whole XML element, not just trim the class name and leave junk behind. If the element has child tags like `intent-filter`, remove the full block cleanly.
+
+In the sample case, the manifest looked roughly like this:
+
+```xml
+<service
+    android:exported="false"
+    android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService"
+    android:permission="android.permission.BIND_JOB_SERVICE" />
+<receiver
+    android:exported="false"
+    android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver" />
+<activity
+    android:exported="false"
+    android:name="com.pairip.licensecheck.LicenseActivity" />
+<provider
+    android:authorities="com.example.app.com.pairip.licensecheck.LicenseContentProvider"
+    android:exported="false"
+    android:name="com.pairip.licensecheck.LicenseContentProvider" />
+</application>
+<uses-permission android:name="com.android.vending.CHECK_LICENSE" />
+```
+
+The lines that mattered were the PairIP ones, not the unrelated scheduler components above them.
+
+So the cleanup target was:
+
+- remove the `com.pairip.licensecheck.LicenseActivity`
+- remove the `com.pairip.licensecheck.LicenseContentProvider`
+- remove the `com.android.vending.CHECK_LICENSE` permission entry
+
+That is the kind of edit I prefer for this situation. Do not overthink it. If the manifest entry is what boots the integrity logic, cut the registration point out completely.
+
+The target is simple:
+
+- no `com.pairip.*` component left in the manifest
+- no leftover PairIP-related permission entry
+- no broken XML after the cleanup
+
+## Rebuild and sign
+
+Once the manifest is clean, rebuild the project:
+
+```bash
+apktool b release.RE
+```
+
+After that, sign the rebuilt APK again:
+
+```bash
+java -jar uber-apk-signer.jar -a release.RE.apk
+```
+
+If the rebuild and signing steps finish cleanly, install the signed APK and launch it again.
+
+In this specific path, that is the checkpoint that matters most:
+
+- the app should boot
+- the PairIP integrity popup should be gone
+- the previous patching work should finally be usable again
+
+If that happens, the manifest path was the real entry point and the manual bypass did its job.
+
+## Why I like this route
+
+For app modding, this route is nice because it stays boring.
+
+No hooks, no root dependency, no runtime module scope, no extra moving pieces. Just static edits and a rebuilt package.
+
+It also gives a fast answer early:
+
+- if the manifest cleanup is enough, great
+- if it is not enough, the app is probably leaning on the native side too, and there is no point pretending this is still a one-file fix
+
+That early split saves time.
+
+## Reference
+
+- [Bypassing PairIP Integrity Checks](https://petruknisme.medium.com/bypassing-pairip-integrity-checks-21d7bdd4a052)
