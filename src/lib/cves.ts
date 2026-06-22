@@ -10,6 +10,49 @@ export type CVEEntry = {
 
 const cveEntries: CVEEntry[] = [
   {
+    id: 'CVE-2026-50539',
+    packageName: 'Xibo CMS',
+    severity: 'Moderate',
+    summary:
+      'Missing object-level authorization on notification export let any authenticated user download arbitrary notification attachments by iterating IDs.',
+    advisoryUrl:
+      'https://github.com/xibosignage/xibo-cms/security/advisories/GHSA-p4pg-v57g-7jf6',
+    blogUrl: '/blog/xibo-cve-2026-50539',
+    date: new Date('2026-06-22'),
+  },
+  {
+    id: 'CVE-2026-54256',
+    packageName: 'Winter CMS',
+    severity: 'Moderate',
+    summary:
+      'The backend FileUpload widget trusted posted file IDs globally, letting any authenticated backend user target unrelated attachment records and modify metadata or ordering.',
+    advisoryUrl:
+      'https://github.com/wintercms/winter/security/advisories/GHSA-3277-h8g9-qj5f',
+    blogUrl: '/blog/winter-cve-2026-54256',
+    date: new Date('2026-06-21'),
+  },
+  {
+    id: 'CVE-2026-54562',
+    packageName: 'Cloudreve',
+    severity: 'Moderate',
+    summary:
+      'Non-admin users granted remote download permission could make Cloudreve fetch loopback and internal URLs, then read the imported response body from their own files.',
+    advisoryUrl:
+      'https://github.com/cloudreve/cloudreve/security/advisories/GHSA-x756-g4x3-c64m',
+    blogUrl: '/blog/cloudreve-cve-2026-54562',
+    date: new Date('2026-06-21'),
+  },
+  {
+    id: 'CVE-2026-10860',
+    packageName: 'MISP',
+    severity: 'High',
+    summary:
+      'A CRUD delete helper precedence bug let real HTTP DELETE requests bypass failed validation, leading to runtime-confirmed cross-organisation galaxy deletion.',
+    advisoryUrl: 'https://cve.threatint.eu/CVE/CVE-2026-10860',
+    blogUrl: '/blog/misp-cve-2026-10860',
+    date: new Date('2026-06-21'),
+  },
+  {
     id: 'CVE-2026-55383',
     packageName: 'InvoiceShelf',
     severity: 'High',
