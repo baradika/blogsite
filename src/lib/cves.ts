@@ -10,6 +10,17 @@ export type CVEEntry = {
 
 const cveEntries: CVEEntry[] = [
   {
+    id: 'CVE-2026-54717',
+    packageName: 'SilverStripe CMS',
+    severity: 'Moderate',
+    summary:
+      'Stored XSS in page list view breadcrumbs let attacker-controlled page titles execute in the SilverStripe CMS admin interface.',
+    advisoryUrl:
+      'https://github.com/silverstripe/silverstripe-cms/security/advisories/GHSA-w3cp-g2pf-65wh',
+    blogUrl: '/blog/silverstripe-cve-2026-54717',
+    date: new Date('2026-06-24'),
+  },
+  {
     id: 'CVE-2026-50539',
     packageName: 'Xibo CMS',
     severity: 'Moderate',
