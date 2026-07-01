@@ -73,11 +73,11 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
       <!-- RPG Dialog box (top-right overlay, like DottoUI's sticky note) -->
       <div
         id="rpg-dialog"
-        class="pixel-bordered pixel-shadow absolute top-1 right-1 w-48 cursor-pointer px-4 py-3.5 [--pf-fill:var(--secondary)] sm:top-3 sm:right-3"
+        class="pixel-bordered pixel-shadow absolute top-1 right-1 w-40 cursor-pointer px-3 py-2.5 [--pf-fill:var(--secondary)] sm:top-3 sm:right-3"
         title="click to skip"
       >
         <div
-          class="font-display min-h-16 text-xs leading-relaxed tracking-[0.05em] uppercase"
+          class="font-display min-h-12 text-[11px] leading-relaxed tracking-[0.05em] uppercase"
         >
           <span id="dialog-text" class="whitespace-pre-line"></span><span
             id="dialog-cursor"
@@ -124,43 +124,37 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
       </Link>
     </div>
   </section>
-</Layout>
-
-<!-- Wallpaper landscape — full-width, sits between content and footer -->
-<div
-  class="relative w-full overflow-hidden"
-  style="height: clamp(220px, 40vw, 420px);"
->
-  <img
-    src="/walpaper.png"
-    alt="pixel art landscape"
-    class="pixelated absolute inset-0 h-full w-full object-cover object-bottom opacity-60"
-  />
-  <!-- Theme-color tint overlay — desaturates image to match palette -->
   <div
-    class="pointer-events-none absolute inset-0"
-    style="background-color: var(--background); opacity: 0.45; mix-blend-mode: normal;"
+    slot="footer-background"
+    class="pointer-events-none absolute inset-x-0 bottom-0 h-[clamp(420px,58vw,720px)] overflow-hidden"
   >
+    <img
+      src="/walpaper.png"
+      alt=""
+      aria-hidden="true"
+      class="pixelated absolute inset-0 h-full w-full object-cover object-bottom opacity-70"
+    />
+    <div
+      class="absolute inset-0"
+      style="background-color: var(--background); opacity: 0.32; mix-blend-mode: normal;"
+    >
+    </div>
+    <div
+      class="absolute inset-x-0 top-0"
+      style="height: 58%; background: linear-gradient(to bottom, var(--background) 0%, color-mix(in oklch, var(--background) 74%, transparent) 36%, transparent 100%);"
+    >
+    </div>
+    <div
+      class="absolute inset-x-0 bottom-0"
+      style="height: 30%; background: linear-gradient(to top, var(--background) 0%, transparent 100%);"
+    >
+    </div>
+    <div
+      class="absolute inset-0"
+      style="background-image: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px);"
+    >
+    </div>
   </div>
-  <!-- Strong top fade: background colour → transparent -->
-  <div
-    class="pointer-events-none absolute inset-x-0 top-0"
-    style="height: 55%; background: linear-gradient(to bottom, var(--background) 0%, transparent 100%);"
-  >
-  </div>
-  <!-- Bottom fade: transparent → background colour (merges into footer) -->
-  <div
-    class="pointer-events-none absolute inset-x-0 bottom-0"
-    style="height: 35%; background: linear-gradient(to top, var(--background) 0%, transparent 100%);"
-  >
-  </div>
-  <!-- Scanline grain -->
-  <div
-    class="pointer-events-none absolute inset-0"
-    style="background-image: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px);"
-  >
-  </div>
-</div>
 
 <script is:inline data-astro-rerun>
   const lines = ['Keep breaking', 'beautiful things_']
@@ -225,3 +219,4 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
     }
   }
 </script>
+</Layout>
