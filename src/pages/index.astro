@@ -73,11 +73,11 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
       <!-- RPG Dialog box (top-right overlay, like DottoUI's sticky note) -->
       <div
         id="rpg-dialog"
-        class="pixel-bordered pixel-shadow absolute top-1 right-1 w-40 cursor-pointer px-3 py-2.5 [--pf-fill:var(--secondary)] sm:top-3 sm:right-3"
+        class="pixel-bordered pixel-shadow absolute top-1 right-1 inline-block w-fit min-w-16 max-w-44 cursor-pointer px-3 py-2.5 [--pf-fill:var(--secondary)] transition-[width,height] duration-150 sm:top-3 sm:right-3"
         title="click to skip"
       >
         <div
-          class="font-display min-h-12 text-[11px] leading-relaxed tracking-[0.05em] uppercase"
+          class="font-display text-[11px] leading-relaxed tracking-[0.05em] whitespace-nowrap uppercase"
         >
           <span id="dialog-text" class="whitespace-pre-line"></span><span
             id="dialog-cursor"
@@ -156,67 +156,67 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
     </div>
   </div>
 
-<script is:inline data-astro-rerun>
-  const lines = ['Keep breaking', 'beautiful things_']
+  <script is:inline data-astro-rerun>
+    const lines = ['Keep breaking', 'beautiful things']
 
-  const state = window
+    const state = window
 
-  if (state.__homeRpgDialogTimer) {
-    clearTimeout(state.__homeRpgDialogTimer)
-    state.__homeRpgDialogTimer = null
-  }
+    if (state.__homeRpgDialogTimer) {
+      clearTimeout(state.__homeRpgDialogTimer)
+      state.__homeRpgDialogTimer = null
+    }
 
-  const setDialogTimer = (callback, delay) => {
-    state.__homeRpgDialogTimer = setTimeout(callback, delay)
-  }
+    const setDialogTimer = (callback, delay) => {
+      state.__homeRpgDialogTimer = setTimeout(callback, delay)
+    }
 
-  const textEl = document.getElementById('dialog-text')
-  const nextEl = document.getElementById('dialog-next')
-  const dialogEl = document.getElementById('rpg-dialog')
+    const textEl = document.getElementById('dialog-text')
+    const nextEl = document.getElementById('dialog-next')
+    const dialogEl = document.getElementById('rpg-dialog')
 
-  if (textEl && nextEl && dialogEl) {
-    let lineIdx = 0
-    let charIdx = 0
-    let printed = ''
+    if (textEl && nextEl && dialogEl) {
+      let lineIdx = 0
+      let charIdx = 0
+      let printed = ''
 
-    textEl.textContent = ''
-    nextEl.style.opacity = '0'
+      textEl.textContent = ''
+      nextEl.style.opacity = '0'
 
-    function tick() {
-      const line = lines[lineIdx]
-      if (charIdx <= line.length) {
-        textEl.textContent = printed + line.slice(0, charIdx)
-        charIdx++
-        setDialogTimer(tick, 60)
-      } else {
-        printed += line + '\n'
-        charIdx = 0
-        lineIdx++
-        if (lineIdx < lines.length) {
-          setDialogTimer(tick, 500)
+      function tick() {
+        const line = lines[lineIdx]
+        if (charIdx <= line.length) {
+          textEl.textContent = printed + line.slice(0, charIdx)
+          charIdx++
+          setDialogTimer(tick, 60)
         } else {
-          // Done: keep the final text visible until the page is refreshed.
-          nextEl.style.opacity = '1'
+          printed += line + '\n'
+          charIdx = 0
+          lineIdx++
+          if (lineIdx < lines.length) {
+            setDialogTimer(tick, 500)
+          } else {
+            // Done: keep the final text visible until the page is refreshed.
+            nextEl.style.opacity = '1'
+            state.__homeRpgDialogTimer = null
+          }
+        }
+      }
+
+      setDialogTimer(tick, 900)
+
+      // Click to skip typing.
+      dialogEl.onclick = () => {
+        if (state.__homeRpgDialogTimer) {
+          clearTimeout(state.__homeRpgDialogTimer)
           state.__homeRpgDialogTimer = null
+        }
+        if (lineIdx < lines.length) {
+          printed = lines.slice(lineIdx).join('\n')
+          textEl.textContent = printed
+          lineIdx = lines.length
+          nextEl.style.opacity = '1'
         }
       }
     }
-
-    setDialogTimer(tick, 900)
-
-    // Click to skip typing.
-    dialogEl.onclick = () => {
-      if (state.__homeRpgDialogTimer) {
-        clearTimeout(state.__homeRpgDialogTimer)
-        state.__homeRpgDialogTimer = null
-      }
-      if (lineIdx < lines.length) {
-        printed = lines.slice(lineIdx).join('\n')
-        textEl.textContent = printed
-        lineIdx = lines.length
-        nextEl.style.opacity = '1'
-      }
-    }
-  }
-</script>
+  </script>
 </Layout>
