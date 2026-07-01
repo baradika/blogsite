@@ -157,66 +157,72 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
   </div>
 
   <script is:inline data-astro-rerun>
-    const lines = ['Keep breaking', 'beautiful things']
+    ;(() => {
+      const lines = ['Keep breaking', 'beautiful things']
+      const state = window
 
-    const state = window
-
-    if (state.__homeRpgDialogTimer) {
-      clearTimeout(state.__homeRpgDialogTimer)
-      state.__homeRpgDialogTimer = null
-    }
-
-    const setDialogTimer = (callback, delay) => {
-      state.__homeRpgDialogTimer = setTimeout(callback, delay)
-    }
-
-    const textEl = document.getElementById('dialog-text')
-    const nextEl = document.getElementById('dialog-next')
-    const dialogEl = document.getElementById('rpg-dialog')
-
-    if (textEl && nextEl && dialogEl) {
-      let lineIdx = 0
-      let charIdx = 0
-      let printed = ''
-
-      textEl.textContent = ''
-      nextEl.style.opacity = '0'
-
-      function tick() {
-        const line = lines[lineIdx]
-        if (charIdx <= line.length) {
-          textEl.textContent = printed + line.slice(0, charIdx)
-          charIdx++
-          setDialogTimer(tick, 60)
-        } else {
-          printed += line + '\n'
-          charIdx = 0
-          lineIdx++
-          if (lineIdx < lines.length) {
-            setDialogTimer(tick, 500)
-          } else {
-            // Done: keep the final text visible until the page is refreshed.
-            nextEl.style.opacity = '1'
-            state.__homeRpgDialogTimer = null
-          }
-        }
-      }
-
-      setDialogTimer(tick, 900)
-
-      // Click to skip typing.
-      dialogEl.onclick = () => {
+      const clearDialogTimer = () => {
         if (state.__homeRpgDialogTimer) {
           clearTimeout(state.__homeRpgDialogTimer)
           state.__homeRpgDialogTimer = null
         }
-        if (lineIdx < lines.length) {
-          printed = lines.slice(lineIdx).join('\n')
-          textEl.textContent = printed
-          lineIdx = lines.length
-          nextEl.style.opacity = '1'
+      }
+
+      const initHomeRpgDialog = () => {
+        clearDialogTimer()
+
+        const textEl = document.getElementById('dialog-text')
+        const nextEl = document.getElementById('dialog-next')
+        const dialogEl = document.getElementById('rpg-dialog')
+
+        if (!textEl || !nextEl || !dialogEl) return
+
+        let lineIdx = 0
+        let charIdx = 0
+        let printed = ''
+
+        textEl.textContent = ''
+        nextEl.style.opacity = '0'
+
+        const setDialogTimer = (callback, delay) => {
+          state.__homeRpgDialogTimer = setTimeout(callback, delay)
+        }
+
+        function tick() {
+          const line = lines[lineIdx]
+          if (charIdx <= line.length) {
+            textEl.textContent = printed + line.slice(0, charIdx)
+            charIdx++
+            setDialogTimer(tick, 60)
+          } else {
+            printed += line + '\n'
+            charIdx = 0
+            lineIdx++
+            if (lineIdx < lines.length) {
+              setDialogTimer(tick, 500)
+            } else {
+              nextEl.style.opacity = '1'
+              state.__homeRpgDialogTimer = null
+            }
+          }
+        }
+
+        setDialogTimer(tick, 900)
+
+        dialogEl.onclick = () => {
+          clearDialogTimer()
+
+          if (lineIdx < lines.length) {
+            printed = lines.slice(lineIdx).join('\n')
+            textEl.textContent = printed
+            lineIdx = lines.length
+            nextEl.style.opacity = '1'
+          }
         }
       }
-    }
+
+      queueMicrotask(initHomeRpgDialog)
+      document.addEventListener('astro:page-load', initHomeRpgDialog, { once: true })
+    })()
   </script>
 </Layout>
