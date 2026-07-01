@@ -3,49 +3,106 @@ import BlogCard from '@/components/BlogCard.astro'
 import Link from '@/components/Link.astro'
 import MusicPresence from '@/components/MusicPresence.astro'
 import PageHead from '@/components/PageHead.astro'
+import { badgeVariants } from '@/components/ui/badge'
 import { buttonVariants } from '@/components/ui/button'
 import { SITE } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
 import { getRecentPosts } from '@/lib/data-utils'
+import { Icon } from 'astro-icon/components'
 
 const blog = await getRecentPosts(SITE.featuredPostCount)
 ---
 
-<Layout class="max-w-3xl">
+<Layout class="max-w-6xl">
   <PageHead slot="head" title="Home" />
-  <section class="bg-background overflow-hidden rounded-lg">
-    <img
-      src="/hero.png"
-      alt="Baradika's Blog hero illustration"
-      class="block h-auto w-full"
-      loading="eager"
-      fetchpriority="high"
-    />
-  </section>
-  <section class="bg-background rounded-lg">
-    <div class="p-6">
-      <p class="text-muted-foreground mb-4 text-base leading-8 sm:text-lg">
-        Welcome to my blog. I’m a security researcher and CTF player, and this
-        is where I write about reverse engineering, forensics, web exploitation,
-        Linux, and the process behind finding and understanding security issues.
+
+  <!-- Hero -->
+  <section
+    class="grid gap-8 py-12 lg:grid-cols-2 lg:items-center lg:gap-10 lg:py-16"
+  >
+    <div class="flex flex-col gap-7">
+      <div class="flex flex-wrap gap-2">
+        <span class={badgeVariants({ variant: 'default' })}
+          >security researcher</span
+        >
+        <span class={badgeVariants({ variant: 'secondary' })}>ctf player</span>
+        <span class={badgeVariants({ variant: 'destructive' })}>bug hunter</span
+        >
+      </div>
+
+      <h1
+        class="font-display text-6xl leading-[0.95] uppercase sm:text-7xl lg:text-8xl"
+      >
+        {SITE.title}
+      </h1>
+
+      <p
+        class="text-muted-foreground mt-0 max-w-xl text-base leading-relaxed sm:text-lg"
+      >
+        Security researcher and CTF player. I write about reverse engineering,
+        forensics, web exploitation, linux, and the process behind finding and
+        understanding security issues.
       </p>
 
-      <p class="text-muted-foreground text-base leading-8 sm:text-lg">
-        You’ll mostly find write-ups, CVEs, notes, and other things I’ve been
-        learning, breaking, or digging into lately.
-      </p>
+      <div class="flex flex-wrap gap-3">
+        <Link
+          href="/blog"
+          class={buttonVariants({ variant: 'default', size: 'default' })}
+        >
+          <Icon name="lucide:book-open" class="size-4" />
+          Browse posts
+        </Link>
+        <Link
+          href="/cve"
+          class={buttonVariants({ variant: 'outline', size: 'default' })}
+        >
+          See CVEs
+        </Link>
+      </div>
+    </div>
+
+    <!-- Right column: Arch logo (like DottoUI sunflowers) + RPG dialog overlay -->
+    <div class="relative mx-auto w-full max-w-xl">
+      <!-- Main decorative image (arch.png) -->
+      <img
+        src="/arch.png"
+        alt="Arch Linux pixel art"
+        class="pixelated h-auto w-full drop-shadow-xl select-none"
+      />
+
+      <!-- RPG Dialog box (top-right overlay, like DottoUI's sticky note) -->
+      <div
+        id="rpg-dialog"
+        class="pixel-bordered pixel-shadow absolute top-1 right-1 w-48 cursor-pointer px-4 py-3.5 [--pf-fill:var(--secondary)] sm:top-3 sm:right-3"
+        title="click to skip"
+      >
+        <div
+          class="font-display min-h-16 text-xs leading-relaxed tracking-[0.05em] uppercase"
+        >
+          <span id="dialog-text" class="whitespace-pre-line"></span><span
+            id="dialog-cursor"
+            class="animate-pulse">█</span
+          >
+        </div>
+        <div class="mt-1 flex justify-end">
+          <span id="dialog-next" class="font-display text-[10px] opacity-0"
+            >▼</span
+          >
+        </div>
+      </div>
     </div>
   </section>
 
+  <!-- Music -->
   <MusicPresence />
 
-  <section class="flex flex-col gap-y-4">
-    <img
-      src="/latestposts.png"
-      alt="Latest posts"
-      class="mx-auto block h-auto w-full max-w-md"
-      loading="lazy"
-    />
+  <!-- Latest Posts -->
+  <section class="flex flex-col gap-y-6 py-8">
+    <h2
+      class="font-display text-foreground text-2xl leading-none tracking-wide uppercase sm:text-3xl"
+    >
+      Latest Posts
+    </h2>
     <ul class="flex flex-col gap-y-4">
       {
         blog.map((post) => (
@@ -68,3 +125,103 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
     </div>
   </section>
 </Layout>
+
+<!-- Wallpaper landscape — full-width, sits between content and footer -->
+<div
+  class="relative w-full overflow-hidden"
+  style="height: clamp(220px, 40vw, 420px);"
+>
+  <img
+    src="/walpaper.png"
+    alt="pixel art landscape"
+    class="pixelated absolute inset-0 h-full w-full object-cover object-bottom opacity-60"
+  />
+  <!-- Theme-color tint overlay — desaturates image to match palette -->
+  <div
+    class="pointer-events-none absolute inset-0"
+    style="background-color: var(--background); opacity: 0.45; mix-blend-mode: normal;"
+  >
+  </div>
+  <!-- Strong top fade: background colour → transparent -->
+  <div
+    class="pointer-events-none absolute inset-x-0 top-0"
+    style="height: 55%; background: linear-gradient(to bottom, var(--background) 0%, transparent 100%);"
+  >
+  </div>
+  <!-- Bottom fade: transparent → background colour (merges into footer) -->
+  <div
+    class="pointer-events-none absolute inset-x-0 bottom-0"
+    style="height: 35%; background: linear-gradient(to top, var(--background) 0%, transparent 100%);"
+  >
+  </div>
+  <!-- Scanline grain -->
+  <div
+    class="pointer-events-none absolute inset-0"
+    style="background-image: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px);"
+  >
+  </div>
+</div>
+
+<script is:inline data-astro-rerun>
+  const lines = ['Keep breaking', 'beautiful things_']
+
+  const state = window
+
+  if (state.__homeRpgDialogTimer) {
+    clearTimeout(state.__homeRpgDialogTimer)
+    state.__homeRpgDialogTimer = null
+  }
+
+  const setDialogTimer = (callback, delay) => {
+    state.__homeRpgDialogTimer = setTimeout(callback, delay)
+  }
+
+  const textEl = document.getElementById('dialog-text')
+  const nextEl = document.getElementById('dialog-next')
+  const dialogEl = document.getElementById('rpg-dialog')
+
+  if (textEl && nextEl && dialogEl) {
+    let lineIdx = 0
+    let charIdx = 0
+    let printed = ''
+
+    textEl.textContent = ''
+    nextEl.style.opacity = '0'
+
+    function tick() {
+      const line = lines[lineIdx]
+      if (charIdx <= line.length) {
+        textEl.textContent = printed + line.slice(0, charIdx)
+        charIdx++
+        setDialogTimer(tick, 60)
+      } else {
+        printed += line + '\n'
+        charIdx = 0
+        lineIdx++
+        if (lineIdx < lines.length) {
+          setDialogTimer(tick, 500)
+        } else {
+          // Done: keep the final text visible until the page is refreshed.
+          nextEl.style.opacity = '1'
+          state.__homeRpgDialogTimer = null
+        }
+      }
+    }
+
+    setDialogTimer(tick, 900)
+
+    // Click to skip typing.
+    dialogEl.onclick = () => {
+      if (state.__homeRpgDialogTimer) {
+        clearTimeout(state.__homeRpgDialogTimer)
+        state.__homeRpgDialogTimer = null
+      }
+      if (lineIdx < lines.length) {
+        printed = lines.slice(lineIdx).join('\n')
+        textEl.textContent = printed
+        lineIdx = lines.length
+        nextEl.style.opacity = '1'
+      }
+    }
+  }
+</script>

@@ -10,16 +10,7 @@ const authors = await getAllAuthors()
 <Layout class="max-w-3xl">
   <PageHead slot="head" title="Authors" />
   <Breadcrumbs items={[{ label: 'Authors', icon: 'lucide:users' }]} />
-  <section class="bg-background overflow-hidden rounded-lg">
-    <img
-      src="/terminal.png"
-      alt="Author page illustration"
-      class="block h-auto w-full"
-      loading="eager"
-      fetchpriority="high"
-    />
-  </section>
-  <section class="bg-background rounded-lg">
+  <section class="pixel-bordered [--pf-fill:var(--background)]">
     <div class="p-6">
       <p class="text-muted-foreground mb-4 text-base leading-8 sm:text-lg">
         Hi!! i'm Fase Rais Baradika but I go by b4r. I was a greek security

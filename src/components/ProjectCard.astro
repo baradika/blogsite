@@ -14,7 +14,7 @@ const { project } = Astro.props
 ---
 
 <div
-  class="bg-card hover:bg-secondary rounded-xl border p-4 transition-colors duration-300 ease-in-out"
+  class="pixel-bordered pixel-shadow-sm [--pf-fill:var(--card)] hover:[--pf-fill:var(--secondary)] p-4 transition-all duration-200"
 >
   <Link
     href={project.data.link}

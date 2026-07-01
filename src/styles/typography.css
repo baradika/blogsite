@@ -88,14 +88,14 @@
     }
 
     :where(code):not(:where(.not-prose, .not-prose *)) {
-      @apply bg-muted/50 text-foreground relative rounded-sm px-[0.3rem] py-[0.2rem] text-sm font-medium break-words;
+      @apply bg-muted/50 text-foreground relative px-[0.3rem] py-[0.2rem] text-sm font-medium break-words;
     }
 
     :where(.shiki):not(:where(pre *, .not-prose, .not-prose *)) {
       background-color: var(--code-block-bg) !important;
       color: var(--code-block-foreground) !important;
       border: 1px solid var(--code-block-border);
-      @apply relative rounded-md px-4 py-3 text-sm font-medium break-words shadow-none;
+      @apply relative px-4 py-3 text-sm font-medium break-words shadow-none;
     }
 
     :where(.shiki code):not(:where(.not-prose, .not-prose *)) {
@@ -154,7 +154,7 @@
     }
 
     :where(kbd):not(:where(.not-prose, .not-prose *)) {
-      @apply text-foreground bg-muted rounded-md border px-2 py-1 text-xs font-medium;
+      @apply text-foreground bg-muted border px-2 py-1 text-xs font-medium;
     }
 
     :where(.katex-display):not(:where(.not-prose, .not-prose *)) {

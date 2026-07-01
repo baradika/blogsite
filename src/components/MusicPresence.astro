@@ -2,15 +2,15 @@
 import { Icon } from 'astro-icon/components';
 ---
 
-<div class="rounded-lg">
+<div class="pixel-bordered pixel-shadow-sm [--pf-fill:var(--card)]">
   <div
     id="music-presence"
-    class="music-presence relative flex flex-col gap-4 overflow-hidden rounded-lg bg-background p-6"
+    class="music-presence relative flex flex-col gap-4 overflow-hidden p-6"
   >
     <!-- Skeleton Loading State -->
     <div id="music-skeleton" class="flex flex-col gap-4">
       <div class="flex items-start gap-4">
-        <div class="size-16 rounded-lg bg-muted animate-pulse"></div>
+        <div class="size-16 pixel-corner bg-muted animate-pulse"></div>
         <div class="flex-1 space-y-2">
           <div class="h-4 w-28 rounded bg-muted animate-pulse"></div>
           <div class="h-5 w-3/4 rounded bg-muted animate-pulse"></div>
@@ -26,7 +26,7 @@ import { Icon } from 'astro-icon/components';
     </div>
 
     <div id="music-empty" class="hidden items-start gap-4">
-      <div class="flex size-16 items-center justify-center rounded-lg bg-muted/70">
+      <div class="flex size-16 items-center justify-center pixel-corner bg-muted/70">
         <Icon name="lucide:music-4" class="size-7 text-muted-foreground" />
       </div>
       <div class="min-w-0 flex-1">
@@ -42,7 +42,7 @@ import { Icon } from 'astro-icon/components';
       <div class="flex items-start gap-4">
         <img
           id="album-art"
-          class="size-16 rounded-lg object-cover"
+          class="size-16 pixel-corner object-cover"
           alt="Album Art"
         />
         <div class="min-w-0 flex-1">
@@ -73,7 +73,7 @@ import { Icon } from 'astro-icon/components';
         </div>
         <div
           id="equalizer"
-          class="music-eq hidden items-end gap-1 self-center text-primary md:flex"
+          class="music-eq hidden items-end gap-1 self-center text-foreground md:flex"
           aria-hidden="true"
         >
           <span class="music-eq-bar h-3 w-1.5 rounded-full bg-current"></span>
@@ -84,9 +84,9 @@ import { Icon } from 'astro-icon/components';
       </div>
       <div
         id="progress-wrap"
-        class="music-progress mt-4 hidden h-0.5 w-full overflow-hidden rounded-full bg-muted/80 md:block"
+        class="music-progress mt-4 hidden h-0.5 w-full overflow-hidden rounded-full bg-foreground/20 md:block"
       >
-        <div id="progress-bar" class="h-full w-0 rounded-full bg-primary"></div>
+        <div id="progress-bar" class="h-full w-0 rounded-full bg-foreground"></div>
       </div>
     </div>
   </div>
@@ -94,7 +94,7 @@ import { Icon } from 'astro-icon/components';
 
 <style>
   .music-presence {
-    --music-accent: var(--primary);
+    --music-accent: var(--foreground);
   }
 
   .music-eq-bar {

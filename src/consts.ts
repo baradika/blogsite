@@ -7,7 +7,7 @@ export const SITE: Site = {
   href: 'https://baradika.site',
   author: 'b4r',
   locale: 'en-US',
-  featuredPostCount: 6,
+  featuredPostCount: 4,
   postsPerPage: 3,
 }
 

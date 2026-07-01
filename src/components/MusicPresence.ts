@@ -140,12 +140,8 @@ function clearProgressTimer(container: HTMLElement) {
   }
 }
 
-function setContainerAccent(container: HTMLElement, color?: string) {
-  if (color) {
-    container.style.setProperty('--music-accent', color)
-  } else {
-    container.style.removeProperty('--music-accent')
-  }
+function setContainerAccent(container: HTMLElement, _color?: string) {
+  container.style.setProperty('--music-accent', 'var(--foreground)')
 }
 
 async function extractAverageColor(img: HTMLImageElement): Promise<string | undefined> {
@@ -286,7 +282,7 @@ function renderTrack(
 
   if (status) {
     status.className = isNowPlaying
-      ? 'inline-flex items-center gap-1 text-xs font-medium text-primary'
+      ? 'inline-flex items-center gap-1 text-xs font-medium text-foreground'
       : 'inline-flex items-center gap-1 text-xs font-medium text-muted-foreground'
     status.innerHTML = isNowPlaying
       ? '<svg viewBox="0 0 16 16" aria-hidden="true" class="size-3 fill-current"><path d="M5 3.5v9l7-4.5-7-4.5Z"/></svg><span>Now playing</span>'
