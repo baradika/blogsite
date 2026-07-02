@@ -1,5 +1,6 @@
 ---
 import BlogCard from '@/components/BlogCard.astro'
+import { PixelGlyph } from '@/components/dotto/pixel-glyph'
 import Link from '@/components/Link.astro'
 import MusicPresence from '@/components/MusicPresence.astro'
 import PageHead from '@/components/PageHead.astro'
@@ -73,7 +74,7 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
       <!-- RPG Dialog box (top-right overlay, like DottoUI's sticky note) -->
       <div
         id="rpg-dialog"
-        class="pixel-bordered pixel-shadow absolute top-1 right-1 inline-block w-fit min-w-16 max-w-44 cursor-pointer px-3 py-2.5 [--pf-fill:var(--secondary)] transition-[width,height] duration-150 sm:top-3 sm:right-3"
+        class="pixel-bordered pixel-shadow absolute top-1 right-1 inline-block w-fit max-w-44 min-w-16 cursor-pointer px-3 py-2.5 transition-[width,height] duration-150 [--pf-fill:var(--secondary)] sm:top-3 sm:right-3"
         title="click to skip"
       >
         <div
@@ -84,10 +85,12 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
             class="animate-pulse">█</span
           >
         </div>
-        <div class="mt-1 flex justify-end">
-          <span id="dialog-next" class="font-display text-[10px] opacity-0"
-            >▼</span
-          >
+        <div class="mt-1 flex justify-start">
+          <PixelGlyph
+            shape="heart"
+            unit={4}
+            class="text-primary"
+          />
         </div>
       </div>
     </div>
@@ -172,17 +175,15 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
         clearDialogTimer()
 
         const textEl = document.getElementById('dialog-text')
-        const nextEl = document.getElementById('dialog-next')
         const dialogEl = document.getElementById('rpg-dialog')
 
-        if (!textEl || !nextEl || !dialogEl) return
+        if (!textEl || !dialogEl) return
 
         let lineIdx = 0
         let charIdx = 0
         let printed = ''
 
         textEl.textContent = ''
-        nextEl.style.opacity = '0'
 
         const setDialogTimer = (callback, delay) => {
           state.__homeRpgDialogTimer = setTimeout(callback, delay)
@@ -201,7 +202,6 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
             if (lineIdx < lines.length) {
               setDialogTimer(tick, 500)
             } else {
-              nextEl.style.opacity = '1'
               state.__homeRpgDialogTimer = null
             }
           }
@@ -216,13 +216,14 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
             printed = lines.slice(lineIdx).join('\n')
             textEl.textContent = printed
             lineIdx = lines.length
-            nextEl.style.opacity = '1'
           }
         }
       }
 
       queueMicrotask(initHomeRpgDialog)
-      document.addEventListener('astro:page-load', initHomeRpgDialog, { once: true })
+      document.addEventListener('astro:page-load', initHomeRpgDialog, {
+        once: true,
+      })
     })()
   </script>
 </Layout>

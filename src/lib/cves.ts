@@ -10,6 +10,27 @@ export type CVEEntry = {
 
 const cveEntries: CVEEntry[] = [
   {
+    id: 'CVE-2026-56826',
+    packageName: 'Shopper',
+    severity: 'Moderate',
+    summary:
+      'Missing function-level authorization on Settings Livewire actions let low-privileged users delete tax, zone, shipping, and carrier configuration used by checkout.',
+    advisoryUrl:
+      'https://github.com/shopperlabs/shopper/security/advisories/GHSA-f7h9-qv4x-9x57',
+    blogUrl: '/blog/shopper-cve-2026-56826',
+    date: new Date('2026-07-02'),
+  },
+  {
+    id: 'CVE-2026-14358',
+    packageName: 'MediaWiki Charts Extension',
+    severity: 'Moderate',
+    summary:
+      'Stored XSS in Wikimedia chart pie tooltips allowed Data namespace field titles to reach the ECharts HTML tooltip renderer.',
+    advisoryUrl: 'https://www.cve.org/CVERecord?id=CVE-2026-14358',
+    blogUrl: '/blog/wikimedia-chart-cve-2026-14358',
+    date: new Date('2026-07-02'),
+  },
+  {
     id: 'CVE-2026-54717',
     packageName: 'SilverStripe CMS',
     severity: 'Moderate',
