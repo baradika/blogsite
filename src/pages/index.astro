@@ -1,6 +1,7 @@
 ---
 import BlogCard from '@/components/BlogCard.astro'
 import { PixelGlyph } from '@/components/dotto/pixel-glyph'
+import { StickyNote } from '@/components/dotto/sticky-note'
 import Link from '@/components/Link.astro'
 import MusicPresence from '@/components/MusicPresence.astro'
 import PageHead from '@/components/PageHead.astro'
@@ -63,7 +64,7 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
     </div>
 
     <!-- Right column: Arch logo (like DottoUI sunflowers) + RPG dialog overlay -->
-    <div class="relative mx-auto w-full max-w-xl">
+    <div class="relative isolate mx-auto w-full max-w-xl">
       <!-- Main decorative image (arch.png) -->
       <img
         src="/arch.png"
@@ -71,10 +72,11 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
         class="pixelated h-auto w-full drop-shadow-xl select-none"
       />
 
-      <!-- RPG Dialog box (top-right overlay, like DottoUI's sticky note) -->
-      <div
+      <!-- Sticky note dialog -->
+      <StickyNote
         id="rpg-dialog"
-        class="pixel-bordered pixel-shadow absolute top-1 right-1 inline-block w-fit max-w-44 min-w-16 cursor-pointer px-3 py-2.5 transition-[width,height] duration-150 [--pf-fill:var(--secondary)] sm:top-3 sm:right-3"
+        align="left"
+        className="pixel-shadow absolute top-4 right-0 z-20 w-[13.75rem] cursor-pointer transition-[width,height] duration-150 sm:top-6 sm:-right-3 lg:-right-6"
         title="click to skip"
       >
         <div
@@ -82,17 +84,13 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
         >
           <span id="dialog-text" class="whitespace-pre-line"></span><span
             id="dialog-cursor"
-            class="animate-pulse">█</span
+            class="dialog-cursor">_</span
           >
         </div>
         <div class="mt-1 flex justify-start">
-          <PixelGlyph
-            shape="heart"
-            unit={4}
-            class="text-primary"
-          />
+          <PixelGlyph shape="heart" unit={4} className="text-primary" />
         </div>
-      </div>
+      </StickyNote>
     </div>
   </section>
 
@@ -161,7 +159,7 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
 
   <script is:inline data-astro-rerun>
     ;(() => {
-      const lines = ['Keep breaking', 'beautiful things']
+      const lines = ['Keep building', 'beautiful things']
       const state = window
 
       const clearDialogTimer = () => {
@@ -226,4 +224,27 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
       })
     })()
   </script>
+
+  <style>
+    .dialog-cursor {
+      animation: dialog-cursor-blink 0.45s steps(1, end) infinite;
+    }
+
+    @keyframes dialog-cursor-blink {
+      0%,
+      45% {
+        opacity: 1;
+      }
+      46%,
+      100% {
+        opacity: 0;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .dialog-cursor {
+        animation: none;
+      }
+    }
+  </style>
 </Layout>

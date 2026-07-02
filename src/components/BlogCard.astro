@@ -12,6 +12,7 @@ import { formatDate } from '@/lib/utils'
 import { Icon } from 'astro-icon/components'
 import type { CollectionEntry } from 'astro:content'
 import Link from './Link.astro'
+import { Card } from './ui/card'
 
 interface Props {
   entry: CollectionEntry<'blog'>
@@ -24,9 +25,7 @@ const authors = await parseAuthors(entry.data.authors ?? [])
 const subpostCount = !isSubpost(entry.id) ? await getSubpostCount(entry.id) : 0
 ---
 
-<div
-  class="pixel-bordered pixel-shadow-sm [--pf-fill:var(--card)] hover:[--pf-fill:var(--secondary)] p-4 transition-all duration-200"
->
+<Card className="pixel-shadow-sm hover:[--pf-fill:var(--secondary)] p-4 transition-all duration-200">
   <Link
     href={`/${entry.collection}/${entry.id}`}
     class="flex flex-col gap-4"
@@ -87,4 +86,4 @@ const subpostCount = !isSubpost(entry.id) ? await getSubpostCount(entry.id) : 0
       }
     </div>
   </Link>
-</div>
+</Card>

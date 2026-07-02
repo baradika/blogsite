@@ -6,10 +6,6 @@ interface Props {
 }
 
 const { src, title, height = '600px' } = Astro.props
-
-// Get the full URL for the PDF
-const url = new URL(src, Astro.url)
-const pdfUrl = url.toString()
 ---
 
 <div class="pdf-viewer-container not-prose my-6 overflow-hidden border">
@@ -94,7 +90,6 @@ const pdfUrl = url.toString()
     class="pdf-iframe w-full hidden md:block"
     style={`height: ${height}`}
     title={title || 'PDF Document'}
-    frameborder="0"
   ></iframe>
   
   <!-- Mobile: Fallback with message -->

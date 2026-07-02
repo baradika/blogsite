@@ -1,6 +1,7 @@
 ---
 import Link from '@/components/Link.astro'
 import { Badge } from '@/components/ui/badge'
+import { Card } from '@/components/ui/card'
 import { formatDate } from '@/lib/utils'
 import { Icon } from 'astro-icon/components'
 import { Image } from 'astro:assets'
@@ -13,9 +14,7 @@ interface Props {
 const { project } = Astro.props
 ---
 
-<div
-  class="pixel-bordered pixel-shadow-sm [--pf-fill:var(--card)] hover:[--pf-fill:var(--secondary)] p-4 transition-all duration-200"
->
+<Card className="pixel-shadow-sm hover:[--pf-fill:var(--secondary)] p-4 transition-all duration-200">
   <Link
     href={project.data.link}
     class="flex flex-col gap-4 sm:flex-row"
@@ -67,4 +66,4 @@ const { project } = Astro.props
       }
     </div>
   </Link>
-</div>
+</Card>

@@ -1,16 +1,14 @@
 ---
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import PageHead from '@/components/PageHead.astro'
+import { Card } from '@/components/ui/card'
 import Layout from '@/layouts/Layout.astro'
-import { getAllAuthors } from '@/lib/data-utils'
-
-const authors = await getAllAuthors()
 ---
 
 <Layout class="max-w-3xl">
   <PageHead slot="head" title="Authors" />
   <Breadcrumbs items={[{ label: 'Authors', icon: 'lucide:users' }]} />
-  <section class="pixel-bordered [--pf-fill:var(--background)]">
+  <Card className="p-0 [--pf-fill:var(--background)]">
     <div class="p-6">
       <p class="text-muted-foreground mb-4 text-base leading-8 sm:text-lg">
         Hi!! i'm Fase Rais Baradika but I go by b4r. I was a greek security
@@ -23,5 +21,5 @@ const authors = await getAllAuthors()
         watch anime, read mangas, and procrastinating.
       </p>
     </div>
-  </section>
+  </Card>
 </Layout>

@@ -1,6 +1,7 @@
 ---
 import Link from '@/components/Link.astro'
 import AvatarComponent from '@/components/ui/avatar'
+import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import type { SocialLink } from '@/types'
 import type { CollectionEntry } from 'astro:content'
@@ -24,9 +25,7 @@ const socialLinks: SocialLink[] = [
 ].filter(Boolean) as SocialLink[]
 ---
 
-<div
-  class="group pixel-bordered pixel-shadow-sm [--pf-fill:var(--card)] has-[a:hover]:[--pf-fill:var(--secondary)] overflow-hidden p-4 transition-all duration-200"
->
+<Card className="group pixel-shadow-sm has-[a:hover]:[--pf-fill:var(--secondary)] overflow-hidden p-4 transition-all duration-200">
   <div class="flex flex-wrap gap-4">
     <Link
       href={`/authors/${author.id}`}
@@ -80,7 +79,7 @@ const socialLinks: SocialLink[] = [
       <SocialIcons links={socialLinks} />
     </div>
   </div>
-</div>
+</Card>
 
 <style>
   .author-name-swap .author-name-primary,

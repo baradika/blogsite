@@ -1,8 +1,9 @@
 ---
+import { Card } from '@/components/ui/card';
 import { Icon } from 'astro-icon/components';
 ---
 
-<div class="pixel-bordered pixel-shadow-sm [--pf-fill:var(--card)]">
+<Card className="pixel-shadow-sm overflow-hidden p-0">
   <div
     id="music-presence"
     class="music-presence relative flex flex-col gap-4 overflow-hidden p-6"
@@ -90,7 +91,7 @@ import { Icon } from 'astro-icon/components';
       </div>
     </div>
   </div>
-</div>
+</Card>
 
 <style>
   .music-presence {
