@@ -34,7 +34,38 @@ const { class: className } = Astro.props
       <slot />
     </main>
     <div class="relative z-0 isolate overflow-visible">
-      <slot name="footer-background" />
+      <slot name="footer-background">
+        <div
+          class="pointer-events-none absolute inset-x-0 bottom-0 h-[clamp(420px,58vw,720px)] overflow-hidden"
+        >
+          <img
+            src="/walpaper.png"
+            alt=""
+            aria-hidden="true"
+            class="pixelated absolute inset-0 h-full w-full object-cover object-bottom opacity-70"
+          />
+          <div
+            class="absolute inset-0"
+            style="background-color: var(--background); opacity: 0.32; mix-blend-mode: normal;"
+          >
+          </div>
+          <div
+            class="absolute inset-x-0 top-0"
+            style="height: 58%; background: linear-gradient(to bottom, var(--background) 0%, color-mix(in oklch, var(--background) 74%, transparent) 36%, transparent 100%);"
+          >
+          </div>
+          <div
+            class="absolute inset-x-0 bottom-0"
+            style="height: 30%; background: linear-gradient(to top, var(--background) 0%, transparent 100%);"
+          >
+          </div>
+          <div
+            class="absolute inset-0"
+            style="background-image: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px);"
+          >
+          </div>
+        </div>
+      </slot>
       <Footer />
     </div>
   </body>
