@@ -11,7 +11,7 @@ image: './a.png'
 
 I recently got **six CVEs** in **Shopper**, an open-source e-commerce platform built on Laravel.
 
-Getting multiple issues in one target is always nice, but what made this one memorable was how varied the bugs were.
+The useful part was the spread. It was not one bug pattern repeated six times.
 
 In the same codebase, I ended up with:
 
@@ -24,20 +24,6 @@ In the same codebase, I ended up with:
 
 All six were fixed in **`2.8.0`**, so the affected range is basically everything **before `2.8.0`**.
 
-## Why I liked this target
-
-When I look at e-commerce targets, I usually expect the good stuff to be around:
-
-- checkout
-- discounts
-- order state
-- admin actions
-- anything that can affect money or permissions
-
-Shopper delivered on that pretty hard.
-
-Some of the bugs were classic "you forgot authorization here" bugs. Some were much more fun, especially the discount race condition and the team settings issue. And then there was the Livewire stuff, which kept turning small trust mistakes into real attack surface.
-
 ## The six CVEs
 
 | CVE | Severity | Summary |
@@ -48,8 +34,6 @@ Some of the bugs were classic "you forgot authorization here" bugs. Some were mu
 | [CVE-2026-47744](https://github.com/shopperlabs/shopper/security/advisories/GHSA-c3qp-2ggw-xjg7) | Critical | Team settings contained authorization defects that let authenticated panel users take over the RBAC system itself. |
 | [CVE-2026-47745](https://github.com/shopperlabs/shopper/security/advisories/GHSA-fxqw-97cc-7g5c) | Moderate | Payment methods, currencies, and carriers exposed inline toggles and record actions without proper per-action authorization checks. |
 | [CVE-2026-47743](https://github.com/shopperlabs/shopper/security/advisories/GHSA-hr9v-r8r2-hg7j) | High | Multiple admin Livewire issues led to data tampering, sensitive data disclosure, and stored XSS. |
-
-## The ones I found most interesting
 
 ### CVE-2026-47744
 
@@ -85,7 +69,7 @@ The kind of bug that is easy to underestimate, because the app still "looks fine
 
 There was also a related problem around per-user limits not being counted the way the validation logic expected. So it was not just a race, it was also bad accounting.
 
-I like bugs like this because they are not loud. There is no flashy exploit chain. It is just broken business logic with real money impact.
+There is no flashy exploit chain here. It is broken business logic with real money impact.
 
 The advisory tied that one to the checkout path directly:
 
@@ -148,9 +132,7 @@ So even in the "simpler" bugs, you could still see the same repeated smell: acti
 
 That is usually what makes a target really satisfying to audit: not just one lucky bug, but a repeated failure pattern.
 
-## What made the set interesting
-
-What I liked here was the range.
+## The pattern across the set
 
 This was not six copies of the same bug. It was:
 

@@ -106,19 +106,6 @@ In this specific path, that is the checkpoint that matters most:
 
 If that happens, the manifest path was the real entry point and the manual bypass did its job.
 
-## Why I like this route
-
-For app modding, this route is nice because it stays boring.
-
-No hooks, no root dependency, no runtime module scope, no extra moving pieces. Just static edits and a rebuilt package.
-
-It also gives a fast answer early:
-
-- if the manifest cleanup is enough, great
-- if it is not enough, the app is probably leaning on the native side too, and there is no point pretending this is still a one-file fix
-
-That early split saves time.
-
 ## Reference
 
 - [Bypassing PairIP Integrity Checks](https://petruknisme.medium.com/bypassing-pairip-integrity-checks-21d7bdd4a052)
