@@ -10,6 +10,17 @@ export type CVEEntry = {
 
 const cveEntries: CVEEntry[] = [
   {
+    id: 'CVE-2026-58410',
+    packageName: 'ChurchCRM',
+    severity: 'High',
+    summary:
+      'Family-scoped API endpoints trusted attacker-controlled family IDs, letting low-privileged users read and create notes on unrelated family records.',
+    advisoryUrl:
+      'https://github.com/ChurchCRM/CRM/security/advisories/GHSA-jjcj-h3cm-p7x7',
+    blogUrl: '/blog/churchcrm-cve-2026-58410',
+    date: new Date('2026-07-03'),
+  },
+  {
     id: 'CVE-2026-56826',
     packageName: 'Shopper',
     severity: 'Moderate',
