@@ -1,0 +1,139 @@
+---
+import Link from '@/components/Link.astro'
+import { IconTile } from '@/components/dotto/icon-tile'
+import { Badge } from '@/components/ui/badge'
+import { Card } from '@/components/ui/card'
+import { Icon } from 'astro-icon/components'
+import type { CollectionEntry } from 'astro:content'
+
+interface Props {
+  achievement: CollectionEntry<'projects'>
+}
+
+const { achievement } = Astro.props
+const {
+  name,
+  description,
+  issuer,
+  image,
+  images,
+  credentialUrl,
+  credentialId,
+  link,
+  linkLabel,
+  issuedDate,
+  startDate,
+  tags,
+} = achievement.data
+
+const href = credentialUrl ?? link
+const hrefLabel = credentialUrl ? 'view credential' : linkLabel ?? 'view link'
+const displayDate = issuedDate ?? startDate
+const displayMonth = displayDate
+  ? new Intl.DateTimeFormat('en', { month: 'long', year: 'numeric' }).format(
+      displayDate,
+    )
+  : undefined
+const certificateImages = images?.length ? images : image ? [image] : []
+---
+
+<Card className="pixel-shadow-sm hover:[--pf-fill:var(--secondary)] p-4 transition-all duration-200">
+  <div class="flex flex-col gap-4">
+    <div class="flex gap-4">
+      {
+        certificateImages.length === 0 && (
+          <div class="shrink-0">
+            <IconTile size={64} className="text-accent-foreground">
+              <Icon name="lucide:award" class="size-7" />
+            </IconTile>
+          </div>
+        )
+      }
+
+      <div class="min-w-0 grow">
+        <div class="flex flex-col gap-1">
+          <h3 class="text-lg font-medium">{name}</h3>
+          <div class="text-muted-foreground flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
+            {
+              issuer && (
+                <span class="inline-flex items-center gap-1.5">
+                  <Icon name="lucide:building-2" class="size-3" />
+                  {issuer}
+                </span>
+              )
+            }
+            {
+              displayMonth && (
+                <span class="inline-flex items-center gap-1.5">
+                  <Icon name="lucide:calendar" class="size-3" />
+                  {displayMonth}
+                </span>
+              )
+            }
+            {
+              credentialId && (
+                <span class="inline-flex items-center gap-1.5">
+                  <Icon name="lucide:fingerprint" class="size-3" />
+                  {credentialId}
+                </span>
+              )
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {
+      certificateImages.length > 0 && (
+        <div class={certificateImages.length > 1 ? 'grid gap-3 md:grid-cols-2' : 'grid gap-3'}>
+          {certificateImages.map((certificateImage) => (
+            <button
+              type="button"
+              class="group relative h-[clamp(180px,42vw,320px)] overflow-hidden rounded-sm border border-border/70 bg-muted/30 text-left"
+              data-certificate-preview
+              data-preview-src={certificateImage.src}
+              data-preview-alt={name}
+              aria-label={`Preview ${name}`}
+            >
+              <img
+                src={certificateImage.src}
+                alt={name}
+                width={certificateImage.width}
+                height={certificateImage.height}
+                loading="lazy"
+                decoding="async"
+                class="h-full w-full object-contain"
+              />
+              <span class="pointer-events-none absolute bottom-2 right-2 inline-flex items-center gap-1.5 border border-border bg-card/90 px-2 py-1 text-[10px] font-medium uppercase tracking-wide text-card-foreground opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+                <Icon name="lucide:search" class="size-3" />
+                Preview
+              </span>
+            </button>
+          ))}
+        </div>
+      )
+    }
+
+    <div class="min-w-0">
+      <p class="text-muted-foreground mb-3 text-sm">{description}</p>
+
+      <div class="flex flex-wrap items-center gap-2">
+        {
+          tags?.map((tag: string) => (
+            <Badge variant="muted">
+              <Icon name="lucide:tag" class="size-3" />
+              {tag}
+            </Badge>
+          ))
+        }
+        {
+          href && (
+            <Link href={href} external underline class="text-sm">
+              {hrefLabel}
+            </Link>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</Card>

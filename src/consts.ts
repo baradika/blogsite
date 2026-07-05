@@ -30,7 +30,7 @@ export const NAV_LINKS: SocialLink[] = [
   },
   {
     href: '/projects',
-    label: 'projects',
+    label: 'achievements',
   },
 ]
 

@@ -1,0 +1,40 @@
+---
+import AchievementsPage from '@/components/AchievementsPage.astro'
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import PageHead from '@/components/PageHead.astro'
+import Layout from '@/layouts/Layout.astro'
+import { getAllAchievements } from '@/lib/data-utils'
+
+export async function getStaticPaths() {
+  const pageSize = 5
+  const allAchievements = await getAllAchievements()
+  const totalPages = Math.max(1, Math.ceil(allAchievements.length / pageSize))
+
+  return Array.from({ length: Math.max(0, totalPages - 1) }, (_, index) => {
+    const currentPage = index + 2
+    const start = (currentPage - 1) * pageSize
+
+    return {
+      params: { page: String(currentPage) },
+      props: {
+        achievements: allAchievements.slice(start, start + pageSize),
+        currentPage,
+        totalPages,
+      },
+    }
+  })
+}
+
+const { achievements, currentPage, totalPages } = Astro.props
+---
+
+<Layout class="max-w-3xl">
+  <PageHead slot="head" title={`Achievements - Page ${currentPage}`} />
+  <Breadcrumbs items={[{ label: 'Achievements', icon: 'lucide:award' }]} />
+
+  <AchievementsPage
+    achievements={achievements}
+    currentPage={currentPage}
+    totalPages={totalPages}
+  />
+</Layout>

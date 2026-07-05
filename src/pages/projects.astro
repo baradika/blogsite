@@ -1,34 +1,23 @@
 ---
+import AchievementsPage from '@/components/AchievementsPage.astro'
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
-import Link from '@/components/Link.astro'
 import PageHead from '@/components/PageHead.astro'
-import ProjectCard from '@/components/ProjectCard.astro'
 import Layout from '@/layouts/Layout.astro'
-import { getAllProjects } from '@/lib/data-utils'
+import { getAllAchievements } from '@/lib/data-utils'
 
-const projects = await getAllProjects()
+const PAGE_SIZE = 5
+const allAchievements = await getAllAchievements()
+const achievements = allAchievements.slice(0, PAGE_SIZE)
+const totalPages = Math.max(1, Math.ceil(allAchievements.length / PAGE_SIZE))
 ---
 
 <Layout class="max-w-3xl">
-  <PageHead slot="head" title="About" />
-  <Breadcrumbs items={[{ label: 'About', icon: 'lucide:info' }]} />
+  <PageHead slot="head" title="Achievements" />
+  <Breadcrumbs items={[{ label: 'Achievements', icon: 'lucide:award' }]} />
 
-  <section>
-    <div class="min-w-full">
-      <div class="prose mb-8">
-        <p class="mt-0">
-          you can see my  <Link
-            href="https://github.com/baradika"
-            external
-            underline>github repos</Link
-          > btw
-        </p>
-      </div>
-
-      <h2 class="mb-4 text-2xl font-medium">Projects</h2>
-      <div class="flex flex-col gap-4">
-        {projects.map((project) => <ProjectCard project={project} />)}
-      </div>
-    </div>
-  </section>
+  <AchievementsPage
+    achievements={achievements}
+    currentPage={1}
+    totalPages={totalPages}
+  />
 </Layout>

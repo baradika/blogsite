@@ -12,11 +12,12 @@ interface Props {
 }
 
 const { project } = Astro.props
+const href = project.data.link ?? project.data.credentialUrl ?? '#'
 ---
 
 <Card className="pixel-shadow-sm hover:[--pf-fill:var(--secondary)] p-4 transition-all duration-200">
   <Link
-    href={project.data.link}
+    href={href}
     class="flex flex-col gap-4 sm:flex-row"
     external
   >

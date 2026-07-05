@@ -28,11 +28,13 @@ export async function getAllPostsAndSubposts(): Promise<
 export async function getAllProjects(): Promise<CollectionEntry<'projects'>[]> {
   const projects = await getCollection('projects')
   return projects.sort((a, b) => {
-    const dateA = a.data.startDate?.getTime() || 0
-    const dateB = b.data.startDate?.getTime() || 0
+    const dateA = (a.data.issuedDate ?? a.data.startDate)?.getTime() || 0
+    const dateB = (b.data.issuedDate ?? b.data.startDate)?.getTime() || 0
     return dateB - dateA
   })
 }
+
+export const getAllAchievements = getAllProjects
 
 export async function getAllTags(): Promise<Map<string, { tag: string; count: number }>> {
   const posts = await getAllPosts()

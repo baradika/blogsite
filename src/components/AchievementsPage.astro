@@ -1,0 +1,87 @@
+---
+import AchievementCard from '@/components/AchievementCard.astro'
+import CertificateLightbox from '@/components/CertificateLightbox.astro'
+import Link from '@/components/Link.astro'
+import { cn } from '@/lib/utils'
+import { Icon } from 'astro-icon/components'
+import type { CollectionEntry } from 'astro:content'
+
+interface Props {
+  achievements: CollectionEntry<'projects'>[]
+  currentPage: number
+  totalPages: number
+}
+
+const { achievements, currentPage, totalPages } = Astro.props
+const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1)
+const pageHref = (page: number) => (page === 1 ? '/projects' : `/projects/${page}`)
+---
+
+<section>
+  <div class="min-w-full">
+    <div class="prose mb-8">
+      <p class="mt-0">
+        A collection of certificates, recognitions, and milestones I have picked
+        up along the way.
+      </p>
+    </div>
+
+    <h2 class="font-display text-foreground mb-4 text-2xl leading-none tracking-wide uppercase sm:text-3xl">
+      Achievements
+    </h2>
+    <div class="flex flex-col gap-4">
+      {
+        achievements.map((achievement) => (
+          <AchievementCard achievement={achievement} />
+        ))
+      }
+    </div>
+
+    {
+      totalPages > 1 && (
+        <nav class="mt-8 flex flex-wrap items-center justify-center gap-2" aria-label="Achievements pagination">
+          <Link
+            href={pageHref(Math.max(1, currentPage - 1))}
+            aria-disabled={currentPage === 1}
+            class={cn(
+              'inline-flex h-9 items-center gap-2 border border-border bg-secondary px-3 text-xs font-medium uppercase tracking-wide text-secondary-foreground pixel-shadow-sm',
+              currentPage === 1 && 'pointer-events-none opacity-45',
+            )}
+          >
+            <Icon name="lucide:chevron-left" class="size-3.5" />
+            Prev
+          </Link>
+
+          {
+            pageNumbers.map((page) => (
+              <Link
+                href={pageHref(page)}
+                aria-current={page === currentPage ? 'page' : undefined}
+                class={cn(
+                  'inline-flex size-9 items-center justify-center border border-border bg-card text-xs font-medium text-card-foreground pixel-shadow-sm',
+                  page === currentPage && 'bg-primary text-primary-foreground',
+                )}
+              >
+                {page}
+              </Link>
+            ))
+          }
+
+          <Link
+            href={pageHref(Math.min(totalPages, currentPage + 1))}
+            aria-disabled={currentPage === totalPages}
+            class={cn(
+              'inline-flex h-9 items-center gap-2 border border-border bg-secondary px-3 text-xs font-medium uppercase tracking-wide text-secondary-foreground pixel-shadow-sm',
+              currentPage === totalPages && 'pointer-events-none opacity-45',
+            )}
+          >
+            Next
+            <Icon name="lucide:chevron-right" class="size-3.5" />
+          </Link>
+        </nav>
+      )
+    }
+  </div>
+</section>
+
+<CertificateLightbox />
