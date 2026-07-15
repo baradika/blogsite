@@ -1,0 +1,27 @@
+---
+import BirthdayLetter from '@/components/BirthdayLetter.astro'
+import Head from '@/components/Head.astro'
+import '@/styles/global.css'
+import '@/styles/typography.css'
+---
+
+<!doctype html>
+<html lang="id" data-theme="light" class="scheme-light">
+  <Head>
+    <title>for Amry ♡</title>
+    <meta name="description" content="A small birthday letter for Amry." />
+    <meta name="robots" content="noindex, nofollow" />
+  </Head>
+  <script is:inline>
+    const forceLightTheme = () => {
+      document.documentElement.setAttribute('data-theme', 'light')
+      document.documentElement.classList.remove('dark')
+    }
+
+    forceLightTheme()
+    document.addEventListener('astro:page-load', forceLightTheme)
+  </script>
+  <body>
+    <BirthdayLetter />
+  </body>
+</html>
